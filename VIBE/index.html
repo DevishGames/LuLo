@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="L-L">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../assets/images/l-l_applogo.png">
+    <link rel="icon" type="image/png" href="../assets/images/l-l_applogo.png">
+    <title>Lust Loops - VIBE</title>
+    <link rel="preload" as="image" href="../assets/images/l-l_background.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap');
+
+        :root {
+            --bg: #080808;
+            --panel: rgba(10, 10, 10, 0.72);
+            --panel-soft: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f4f4f5;
+            --muted: rgba(228, 228, 231, 0.68);
+            --glass-top: rgba(255,255,255,0.08);
+            --glass-mid: rgba(255,255,255,0.025);
+            --glass-bottom: rgba(255,255,255,0.01);
+            --gold-line: rgba(255,214,130,0.2);
+            --cyan: #00e5ff;
+            --magenta: #ff007f;
+            --hot: #ff6a00;
+            --not: #b8bec7;
+            --not-line: #d8dde3;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; margin: 0; overscroll-behavior-y: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background:
+                url('../assets/images/l-l_background.png') center / cover no-repeat fixed,
+                #080808;
+            min-height: 100dvh;
+            padding: calc(74px + env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+        }
+
+        .shell {
+            width: min(100%, 900px);
+            margin: 0 auto;
+            min-height: calc(100dvh - 74px - env(safe-area-inset-top) - max(16px, env(safe-area-inset-bottom)));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 22px;
+        }
+
+        .topbar,
+        .statement-card,
+        .finish-card,
+        .overlay-card {
+            position: relative;
+            border: 1px solid color-mix(in srgb, var(--gold-line) 72%, var(--border));
+            background:
+                linear-gradient(180deg, var(--glass-top), var(--glass-mid) 34%, var(--glass-bottom)),
+                radial-gradient(circle at 14% 18%, rgba(255,214,130,0.08), transparent 24%),
+                radial-gradient(circle at 82% 18%, rgba(255,255,255,0.04), transparent 22%),
+                var(--panel);
+            box-shadow:
+                0 24px 60px rgba(0,0,0,0.42),
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                inset 0 0 0 1px rgba(255,255,255,0.02),
+                0 0 0 1px rgba(255,214,130,0.03),
+                0 0 34px rgba(255,214,130,0.08);
+            backdrop-filter: blur(22px) saturate(120%);
+            -webkit-backdrop-filter: blur(22px) saturate(120%);
+            animation: glassRise 0.34s ease both;
+        }
+
+        .statement-card::before,
+        .finish-card::before,
+        .overlay-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at top left, rgba(0,229,255,0.08), transparent 28%),
+                radial-gradient(circle at top right, rgba(255,0,127,0.08), transparent 28%),
+                linear-gradient(180deg, rgba(255,255,255,0.03), transparent 26%);
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 160;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: max(14px, env(safe-area-inset-top)) 16px 14px;
+            border-left: 0;
+            border-right: 0;
+            border-top: 0;
+            border-radius: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.94), rgba(0,0,0,0.8));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: none;
+        }
+
+        .topbar-title,
+        .chip,
+        .action-copy,
+        .ghost-btn,
+        .action-btn {
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+        }
+
+        .topbar-title {
+            margin: 0;
+            font-size: 11px;
+            font-weight: 800;
+            color: rgba(255,248,228,0.92);
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+        }
+
+        .topbar::before {
+            display: none;
+        }
+
+        .topbar-nav-btn {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(10,10,10,0.96);
+            color: rgba(255,255,255,0.9);
+            font: inherit;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.24);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .ghost-btn,
+        .action-btn {
+            font: inherit;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .ghost-btn {
+            padding: 12px 16px;
+            border-radius: 18px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015)),
+                rgba(10,10,10,0.52);
+            color: rgba(255,248,228,0.92);
+            border: 1px solid rgba(255,214,130,0.16);
+            font-size: 11px;
+            font-weight: 800;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                inset 0 0 0 1px rgba(255,225,158,0.03),
+                0 0 18px rgba(255,214,130,0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .statement-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-block: 20px;
+        }
+
+        .statement-card,
+        .finish-card {
+            width: min(100%, 760px);
+            padding: 30px;
+            border-radius: 42px;
+        }
+
+        .statement-card {
+            --challenge-accent: rgba(255,255,255,0.14);
+            --challenge-accent-glow: rgba(255,255,255,0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: min(760px, 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(0,229,255,0.18), transparent 30%),
+                radial-gradient(circle at 84% 20%, rgba(255,0,127,0.2), transparent 32%),
+                radial-gradient(circle at 50% 0%, rgba(255,214,130,0.14), transparent 26%),
+                linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.015)),
+                var(--panel);
+            border-color: rgba(255,214,130,0.22);
+            box-shadow:
+                0 40px 80px -16px rgba(0, 0, 0, 0.88),
+                inset 0 1px 0 rgba(255,255,255,0.1),
+                inset 0 0 0 1px rgba(255,255,255,0.02),
+                0 0 0 1px rgba(255,214,130,0.06),
+                0 0 34px rgba(0,229,255,0.12),
+                0 0 44px rgba(255,0,127,0.12);
+            backdrop-filter: blur(28px) saturate(125%);
+            -webkit-backdrop-filter: blur(28px) saturate(125%);
+        }
+
+        .statement-card::after {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border-radius: 32px;
+            pointer-events: none;
+            border: 1px solid rgba(255,214,130,0.08);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 0 0 1px rgba(255,255,255,0.01);
+        }
+
+        .statement-back {
+            display: none;
+        }
+
+        .statement-meta {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .vibe-scale {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 12px;
+            margin: 0 0 24px;
+            padding: 16px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,214,130,0.16);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012)),
+                rgba(8,8,8,0.48);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 0 26px rgba(255,106,0,0.1);
+        }
+
+        .vibe-scale-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin: 0;
+            color: rgba(255,236,188,0.78);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .vibe-track {
+            position: relative;
+            width: 100%;
+            height: 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,214,130,0.18);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0)),
+                rgba(18, 6, 8, 0.88);
+            overflow: visible;
+            box-shadow:
+                inset 0 1px 6px rgba(0,0,0,0.55),
+                0 0 18px rgba(0,229,255,0.08);
+        }
+
+        .vibe-fill {
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #7a0718 0%, #ff6a00 58%, #ffd36a 100%);
+            box-shadow:
+                0 0 16px rgba(255,80,0,0.52),
+                0 0 28px rgba(255,214,90,0.22);
+            transition: width 0.42s ease;
+        }
+
+        .vibe-fire {
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            translate: 0 -50%;
+            font-size: 1.55rem;
+            filter:
+                drop-shadow(0 0 calc(6px + (var(--vibe-glow, 0) * 18px)) rgba(255,106,0,0.9))
+                drop-shadow(0 0 calc(2px + (var(--vibe-glow, 0) * 14px)) rgba(255,214,90,0.72));
+            opacity: calc(0.45 + (var(--vibe-glow, 0) * 0.55));
+            transform: scale(calc(0.86 + (var(--vibe-glow, 0) * 0.2)));
+            transition: opacity 0.42s ease, transform 0.42s ease, filter 0.42s ease;
+            animation: fireFlicker 1.1s ease-in-out infinite alternate;
+        }
+
+        .statement-card.question-fade .statement-prompt,
+        .statement-card.question-fade .statement-meta {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        .statement-card .statement-prompt,
+        .statement-card .statement-meta {
+            transition: opacity 0.24s ease, transform 0.24s ease;
+        }
+
+        .statement-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            grid-column: 1;
+        }
+
+        .statement-hero {
+            margin: 0;
+            font-size: clamp(2.5rem, 7vw, 4.2rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: var(--vibe-accent, #fff);
+            text-shadow:
+                0 0 22px color-mix(in srgb, var(--vibe-accent, #fff) 62%, transparent),
+                0 0 48px color-mix(in srgb, var(--vibe-accent, #fff) 34%, transparent),
+                0 0 72px color-mix(in srgb, var(--vibe-accent, #fff) 16%, transparent);
+        }
+
+        .statement-instruction {
+            margin: 0;
+            color: rgba(255,223,168,0.68);
+            font-size: 1rem;
+            line-height: 1.55;
+            max-width: 26rem;
+            text-align: center;
+        }
+
+        .challenge-lead {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: rgba(255,255,255,0.76);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+        }
+
+        .challenge-lead-name {
+            color: var(--vibe-accent, #fff);
+            text-shadow: 0 0 16px color-mix(in srgb, var(--vibe-accent, #fff) 34%, transparent);
+        }
+
+        .challenge-lead-separator {
+            color: rgba(255,255,255,0.28);
+        }
+
+        .challenge-lead-label {
+            color: #d8a8b8;
+        }
+
+        .challenge-kicker {
+            color: rgba(255,215,140,0.68);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.34em;
+            white-space: nowrap;
+        }
+
+        #statementLead {
+            display: none;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .statement-text {
+            margin: 0;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            line-height: 1.12;
+            letter-spacing: -0.04em;
+            font-weight: 300;
+            font-style: italic;
+            text-wrap: balance;
+            max-width: 13ch;
+            text-shadow: 0 6px 24px rgba(0,0,0,0.22);
+        }
+
+        .statement-text.size-medium {
+            font-size: clamp(1.75rem, 4vw, 2.55rem);
+            line-height: 1.16;
+        }
+
+        .statement-text.size-small {
+            font-size: clamp(1.4rem, 3.3vw, 2rem);
+            line-height: 1.2;
+            letter-spacing: -0.028em;
+        }
+
+        .statement-text.size-xsmall {
+            font-size: clamp(1.1rem, 2.7vw, 1.5rem);
+            line-height: 1.26;
+            letter-spacing: -0.02em;
+        }
+
+        .statement-prompt {
+            grid-column: 1;
+            padding: 10px 0 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            text-align: center;
+            max-height: min(42dvh, 360px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
+
+        .statement-actions {
+            grid-column: 1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 26px;
+            max-width: 520px;
+            margin-inline: auto;
+            width: 100%;
+        }
+
+        .action-btn {
+            min-height: 78px;
+            padding: 14px 16px;
+            border-radius: 26px;
+            color: #fff;
+            border: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            align-items: center;
+            gap: 10px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%),
+                rgba(14,14,14,0.62);
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.1),
+                inset 0 0 0 1px rgba(255,255,255,0.05),
+                0 14px 28px rgba(0,0,0,0.22);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .action-btn.hot {
+            color: #ff9a4a;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%),
+                linear-gradient(180deg, color-mix(in srgb, var(--hot) 5%, transparent), transparent 90%),
+                rgba(14,14,14,0.62);
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.1),
+                inset 0 0 0 1px rgba(255,255,255,0.05),
+                0 14px 28px rgba(0,0,0,0.22),
+                0 0 22px rgba(255, 106, 0, 0.16);
+            animation: actionButtonGlow 2.8s ease-in-out infinite;
+        }
+
+        .action-btn.hot {
+            animation: hotButtonPulse 2.2s ease-in-out infinite;
+        }
+
+        .action-btn.not {
+            color: var(--not);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%),
+                linear-gradient(180deg, color-mix(in srgb, var(--not) 5%, transparent), transparent 90%),
+                rgba(14,14,14,0.62);
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.1),
+                inset 0 0 0 1px color-mix(in srgb, var(--not-line) 34%, rgba(255,255,255,0.04)),
+                0 14px 28px rgba(0,0,0,0.22),
+                0 0 22px rgba(216, 221, 227, 0.14);
+            animation: actionButtonGlow 2.8s ease-in-out infinite;
+        }
+
+        .action-btn.hot .action-icon,
+        .action-btn.hot .action-copy strong {
+            color: #ff9a4a;
+            text-shadow:
+                0 0 16px rgba(255,122,26,0.62),
+                0 0 34px rgba(255,122,26,0.18);
+        }
+
+        .action-btn.not .action-icon,
+        .action-btn.not .action-copy strong {
+            color: var(--not);
+            text-shadow:
+                0 0 16px rgba(216,221,227,0.42),
+                0 0 34px rgba(184,190,199,0.16);
+        }
+
+        .action-btn:hover,
+        .action-btn:focus-visible {
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.12),
+                inset 0 0 0 1px rgba(255,236,188,0.08),
+                0 14px 28px rgba(0,0,0,0.24),
+                0 0 24px rgba(255,214,130,0.14);
+        }
+
+        .action-btn.hot:hover,
+        .action-btn.hot:focus-visible {
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.12),
+                inset 0 0 0 1px rgba(255,236,188,0.08),
+                0 14px 28px rgba(0,0,0,0.22),
+                0 0 28px rgba(255, 106, 0, 0.22);
+        }
+
+        .action-btn.not:hover,
+        .action-btn.not:focus-visible {
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.12),
+                inset 0 0 0 1px rgba(255,236,188,0.08),
+                0 14px 28px rgba(0,0,0,0.22),
+                0 0 28px rgba(216, 221, 227, 0.2);
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        .action-btn.hot:active {
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.12),
+                inset 0 0 0 1px rgba(255,236,188,0.08),
+                0 10px 18px rgba(0,0,0,0.2),
+                0 0 34px rgba(255, 106, 0, 0.28);
+        }
+
+        .action-btn.not:active {
+            box-shadow:
+                inset 0 1px 1px rgba(255,255,255,0.12),
+                inset 0 0 0 1px rgba(255,236,188,0.08),
+                0 10px 18px rgba(0,0,0,0.2),
+                0 0 28px rgba(216, 221, 227, 0.24);
+        }
+
+        .action-icon { display: none; }
+
+        .action-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .action-copy strong {
+            font-size: 1.28rem;
+            letter-spacing: 0.08em;
+        }
+
+        .action-copy span {
+            color: rgba(255,236,188,0.78);
+        }
+
+        @keyframes actionIconPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.86;
+            }
+
+            50% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        @keyframes actionButtonGlow {
+            0%, 100% {
+                filter: saturate(1);
+            }
+
+            50% {
+                filter: saturate(1.08) brightness(1.02);
+            }
+        }
+
+        @keyframes hotButtonPulse {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                filter: saturate(1);
+            }
+
+            50% {
+                transform: translateY(-1px) scale(1.015);
+                filter: saturate(1.12) brightness(1.04);
+            }
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-link {
+            font: inherit;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+            padding: 16px 0;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,236,188,0.24), transparent 44%),
+                linear-gradient(180deg, #cb9c2f 0%, #8b6117 100%);
+            color: #fff7dd;
+            border: 1px solid rgba(255,226,158,0.24);
+            box-shadow:
+                inset 0 1px 0 rgba(255,248,220,0.2),
+                0 16px 30px rgba(127,84,16,0.3),
+                0 0 30px rgba(255,214,130,0.18);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+            color: rgba(255,255,255,0.88);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+        }
+
+        .btn-link {
+            padding: 8px 12px;
+            color: rgba(255,255,255,0.72);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            background: transparent;
+        }
+
+        .btn-primary:active,
+        .btn-secondary:active {
+            scale: 0.95;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 120;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+            background:
+                radial-gradient(circle at top left, rgba(0,229,255,0.06), transparent 24%),
+                radial-gradient(circle at top right, rgba(255,0,127,0.06), transparent 24%),
+                rgba(0,0,0,0.72);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .overlay-card {
+            width: min(100%, 620px);
+            padding: 28px;
+            border-radius: 32px;
+            text-align: center;
+            max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 36px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .intro-card {
+            width: min(100%, 760px);
+            text-align: center;
+            padding: 34px 28px 30px;
+            border-radius: 40px;
+        }
+
+        .intro-choice-list {
+            display: grid;
+            gap: 16px;
+            width: min(100%, 420px);
+            margin: 20px auto;
+        }
+
+        .intro-choice-block {
+            display: grid;
+            gap: 8px;
+        }
+
+        .intro-choice-btn {
+            min-height: 56px;
+            padding: 12px 18px;
+            border-radius: 22px;
+            pointer-events: none;
+        }
+
+        .intro-choice-btn .action-copy strong {
+            font-size: 1rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .fire-modal {
+            z-index: 150;
+        }
+
+        .fire-card {
+            width: min(100%, 760px);
+        }
+
+        .fire-actions,
+        .timer-actions {
+            display: grid;
+            gap: 12px;
+        }
+
+        .fire-actions {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        #firePromptModal .overlay-title {
+            margin-bottom: 22px;
+        }
+
+        #firePromptModal .overlay-copy {
+            margin-bottom: 26px;
+        }
+
+        .fire-vibe-scale {
+            display: grid;
+            gap: 10px;
+            width: min(100%, 460px);
+            margin: 0 auto 18px;
+            padding: 12px 14px 14px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,214,130,0.2);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.012)),
+                rgba(8,8,8,0.58);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 0 30px rgba(255,106,0,0.14);
+        }
+
+        .fire-vibe-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: rgba(255,236,188,0.9);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+        }
+
+        .fire-vibe-flame {
+            font-size: 1.35rem;
+            line-height: 1;
+            filter:
+                drop-shadow(0 0 14px rgba(255,106,0,0.95))
+                drop-shadow(0 0 22px rgba(255,214,90,0.72));
+            animation: fireFlicker 0.85s ease-in-out infinite alternate;
+        }
+
+        .fire-vibe-track {
+            height: 14px;
+            --vibe-glow: 1;
+        }
+
+        .fire-vibe-fill {
+            width: 100%;
+        }
+
+        .timer-actions {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .slot-shell {
+            display: grid;
+            gap: 22px;
+            text-align: center;
+        }
+
+        .slot-attempts {
+            color: rgba(255,235,196,0.72);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .slot-machine-frame {
+            position: relative;
+            padding: 22px;
+            border-radius: 34px;
+            border: 1px solid rgba(255,106,0,0.34);
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,106,0,0.16), transparent 54%),
+                linear-gradient(180deg, rgba(255,215,117,0.1), rgba(255,215,117,0.02)),
+                rgba(8,4,5,0.84);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,240,195,0.08),
+                0 18px 36px rgba(0,0,0,0.28),
+                0 0 44px rgba(255,106,0,0.14);
+        }
+
+        .slot-reel-window {
+            position: relative;
+            overflow: hidden;
+            min-height: 156px;
+            border-radius: 26px;
+            border: 1px solid rgba(255,223,148,0.18);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0)),
+                rgba(10,4,6,0.9);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+        }
+
+        .slot-reel-window::before,
+        .slot-reel-window::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 26px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .slot-reel-window::before {
+            top: 0;
+            background: linear-gradient(180deg, rgba(10,4,6,0.96), transparent);
+        }
+
+        .slot-reel-window::after {
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(10,4,6,0.96), transparent);
+        }
+
+        .slot-reel-track {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 156px;
+            transition: filter 0.2s ease, transform 0.2s ease;
+        }
+
+        .slot-reel.is-spinning .slot-reel-track {
+            filter: blur(6px);
+            transform: scale(0.985);
+        }
+
+        .slot-reel-label {
+            margin-bottom: 10px;
+            color: rgba(255,231,183,0.56);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.24em;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .slot-reel-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 14px 12px;
+            text-align: center;
+            color: #fff2d5;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+            opacity: 0.42;
+            filter: blur(2.8px);
+            transition: opacity 0.2s ease, filter 0.2s ease;
+        }
+
+        .slot-reel-item.active {
+            color: #fff7e6;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            opacity: 1;
+            filter: none;
+            text-shadow:
+                0 0 18px rgba(255,224,145,0.28),
+                0 0 26px rgba(255,106,0,0.28);
+        }
+
+        .slot-result {
+            display: none;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,225,155,0.12);
+            background: rgba(8,4,5,0.54);
+            text-align: center;
+        }
+
+        .slot-result.active {
+            display: grid;
+            gap: 14px;
+        }
+
+        .slot-result-title {
+            margin: 0;
+            color: #ffd36a;
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .slot-actions {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .slot-pick-btn.ready {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,236,188,0.24), transparent 44%),
+                linear-gradient(180deg, #cb9c2f 0%, #8b6117 100%);
+            color: #fff7dd;
+            border-color: rgba(255,226,158,0.24);
+            box-shadow:
+                inset 0 1px 0 rgba(255,248,220,0.2),
+                0 16px 30px rgba(127,84,16,0.3),
+                0 0 30px rgba(255,214,130,0.18);
+        }
+
+        .challenge-panel {
+            display: grid;
+            gap: 18px;
+        }
+
+        .challenge-text {
+            margin: 0;
+            color: #fff4de;
+            font-size: clamp(1.2rem, 3.2vw, 1.7rem);
+            font-style: italic;
+            line-height: 1.35;
+        }
+
+        .timer-panel {
+            display: grid;
+            gap: 8px;
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,106,0,0.24);
+            background: rgba(0,0,0,0.46);
+        }
+
+        .timer-label {
+            color: rgba(255,235,196,0.6);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+
+        .challenge-timer {
+            margin: 18px auto;
+            color: #ff9a4a;
+            font-size: clamp(3rem, 16vw, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            text-shadow:
+                0 0 24px rgba(255,106,0,0.58),
+                0 0 46px rgba(255,214,90,0.2);
+        }
+
+        .overlay-title,
+        .finish-title {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 7vw, 3.2rem);
+            letter-spacing: -0.05em;
+            line-height: 0.96;
+        }
+
+        .intro-kicker {
+            margin: 0 0 14px;
+            color: #8f1438;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+        }
+
+        .intro-names {
+            margin: 0 0 22px;
+            font-size: clamp(2rem, 8vw, 3.4rem);
+            font-weight: 900;
+            letter-spacing: -0.06em;
+            line-height: 0.94;
+            text-transform: uppercase;
+        }
+
+        .overlay-copy,
+        .finish-copy {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .intro-copy {
+            margin: 0;
+            color: #f5f5f5;
+            font-size: clamp(1.35rem, 3.2vw, 2.2rem);
+            line-height: 1.3;
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: -0.04em;
+            text-wrap: balance;
+        }
+
+        .intro-copy-fade {
+            position: relative;
+            max-width: 32rem;
+            margin: 0 auto;
+        }
+
+        .overlay-actions,
+        .finish-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+
+        .intro-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        @keyframes fireFlicker {
+            0% { transform: scale(calc(0.82 + (var(--vibe-glow, 0) * 0.2))) rotate(-3deg); }
+            45% { transform: scale(calc(0.95 + (var(--vibe-glow, 0) * 0.24))) rotate(2deg); }
+            100% { transform: scale(calc(0.88 + (var(--vibe-glow, 0) * 0.22))) rotate(-1deg); }
+        }
+
+        @keyframes glassRise {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .statement-back:hover,
+        .statement-back:focus-visible,
+        .ghost-btn:hover,
+        .ghost-btn:focus-visible {
+            transform: translateY(-1px);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 0 0 1px rgba(255,214,130,0.04),
+                0 10px 24px rgba(0,0,0,0.18),
+                0 0 26px rgba(255,214,130,0.12);
+        }
+
+        .finish-actions .ghost-btn,
+        .overlay-actions .ghost-btn {
+            min-width: 170px;
+        }
+
+        .statement-lead {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: rgba(255,219,150,0.72);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.34em;
+            text-transform: uppercase;
+        }
+
+        .statement-lead-label {
+            color: rgba(255,223,168,0.88);
+        }
+
+        .statement-lead-separator {
+            color: rgba(255,216,144,0.28);
+        }
+
+        .accent-cyan {
+            color: var(--cyan);
+            text-shadow:
+                0 0 20px rgba(0,229,255,0.6),
+                0 0 36px rgba(0,229,255,0.24);
+        }
+
+        .accent-magenta {
+            color: var(--magenta);
+            text-shadow:
+                0 0 20px rgba(255,0,127,0.56),
+                0 0 36px rgba(255,0,127,0.22);
+        }
+
+        [hidden] { display: none !important; }
+
+        @media (max-width: 720px) {
+            html,
+            body {
+                height: auto;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            body {
+                background:
+                    url('../assets/images/l-l_background.png') center top / cover no-repeat,
+                    #080808;
+                padding:
+                    calc(74px + env(safe-area-inset-top)) 12px
+                    max(12px, env(safe-area-inset-bottom));
+            }
+
+            .shell {
+                min-height: auto;
+                justify-content: flex-start;
+            }
+
+            .statement-wrap {
+                align-items: stretch;
+                padding-block: 0;
+            }
+
+            .statement-actions,
+            .fire-actions,
+            .timer-actions,
+            .slot-actions {
+                grid-template-columns: 1fr;
+                display: grid;
+            }
+
+            .statement-card,
+            .finish-card,
+            .overlay-card {
+                padding: 22px 18px;
+                border-radius: 28px;
+            }
+
+            .intro-card {
+                padding: 28px 18px 24px;
+            }
+
+            .statement-header {
+                padding-top: 18px;
+            }
+
+            .statement-card {
+                min-height: auto;
+                justify-content: flex-start;
+            }
+
+            .statement-prompt {
+                max-height: none;
+                overflow: visible;
+            }
+
+            .statement-text {
+                max-width: none;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar" id="topbar" hidden>
+        <p class="topbar-title">Lust Loops - VIBE</p>
+        <button class="topbar-nav-btn" id="globalBackBtn" type="button">Tillbaka</button>
+    </header>
+    <main class="shell">
+        <section class="statement-wrap">
+            <article class="statement-card" id="statementCard" hidden>
+                <button class="statement-back" id="backBtn" type="button">Tillbaka</button>
+                <div class="statement-meta">
+                    <div class="statement-header">
+                        <h2 class="statement-hero" id="statementLeadName">Vibe</h2>
+                        <p class="statement-instruction" id="statementInstruction">Känn efter tillsammans - ett spel som öppnar för dialog...</p>
+                        <div class="statement-lead" id="statementLead">
+                            <span class="statement-lead-label" id="statementLeadLabel">...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="vibe-scale" id="vibeScale" style="--vibe-glow: 0;">
+                    <div class="vibe-scale-top">
+                        <span id="vibeLevelLabel">Fire</span>
+                    </div>
+                    <div class="vibe-track" aria-label="Vibe score">
+                        <div class="vibe-fill" id="vibeFill"></div>
+                        <span class="vibe-fire" id="vibeFire" aria-hidden="true">🔥</span>
+                    </div>
+                </div>
+                <div class="statement-prompt">
+                    <p class="statement-text" id="statementText">...</p>
+                </div>
+                <div class="statement-actions" id="statementActions">
+                    <button class="action-btn hot" id="hotBtn" type="button">
+                        <span class="action-copy"><strong>Sexigt</strong><span>Det här får igång mig!</span></span>
+                    </button>
+                    <button class="action-btn not" id="notBtn" type="button">
+                        <span class="action-copy"><strong>Glöm det</strong><span>Inte för mig</span></span>
+                    </button>
+                </div>
+            </article>
+
+            <article class="finish-card" id="finishCard" hidden>
+                <h2 class="finish-title">Pulsen är satt</h2>
+                <p class="finish-copy">Den aktiva poolen är slut för den här omgången. Starta om för att profilera på nytt och spela en ny väg genom Lust Loops.</p>
+                <div class="finish-actions">
+                    <button class="ghost-btn" id="restartBtn" type="button">Spela igen</button>
+                    <button class="ghost-btn" id="finishBackBtn" type="button">Tillbaka</button>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <div class="overlay active" id="introOverlay">
+        <div class="overlay-card intro-card">
+            <p class="intro-kicker">VÄLKOMMEN TILL VIBE</p>
+            <h2 class="intro-names" id="introNames">VIBE</h2>
+            <div class="intro-copy-fade" id="introCopyFade">
+                <p class="intro-copy">Lägg fördomarna åt sidan när VIBE fokuserar på dialogen<br>Ni får påståenden och fantasier att känna efter och tycka till om.</p>
+                <div class="intro-choice-list" aria-label="Val i VIBE">
+                    <div class="intro-choice-block">
+                        <span class="action-btn hot intro-choice-btn" aria-hidden="true">
+                            <span class="action-copy"><strong>Sexigt</strong></span>
+                        </span>
+                        <p class="intro-copy">fördjupar samtalet och fyller mätaren.</p>
+                    </div>
+                    <div class="intro-choice-block">
+                        <span class="action-btn not intro-choice-btn" aria-hidden="true">
+                            <span class="action-copy"><strong>Glöm det</strong></span>
+                        </span>
+                        <p class="intro-copy">tar er vidare till nästa påstående.</p>
+                    </div>
+                </div>
+                <p class="intro-copy">När mätaren är full låser ni upp en fysisk utmaning.<br>Ni väljer själva: agera direkt eller fortsätt bygga upp er VIBE med samtal.</p>
+            </div>
+            <div class="intro-actions">
+                <button class="btn-primary" id="introStartBtn" type="button">Starta spelet!</button>
+                <button class="btn-link" id="introBackBtn" type="button">Tillbaka</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay fire-modal" id="firePromptModal">
+        <div class="overlay-card fire-card">
+            <p class="intro-kicker">SEXIGT</p>
+            <div class="fire-vibe-scale" aria-label="FIRE-skala full">
+                <div class="fire-vibe-label">
+                    <span>FIRE</span>
+                    <span class="fire-vibe-flame" aria-hidden="true">🔥</span>
+                </div>
+                <div class="vibe-track fire-vibe-track">
+                    <div class="vibe-fill fire-vibe-fill"></div>
+                </div>
+            </div>
+            <h2 class="overlay-title">Er VIBE är på topp</h2>
+            <p class="overlay-copy">Mätaren är full och ni har nu chansen att få en fysisk utmaning. Vill ni få en het uppgift i nivå med er VIBE, eller föredrar ni att diskutera vidare för att bygga upp än mer spänning?</p>
+            <div class="fire-actions">
+                <button class="btn-primary" id="openSlotBtn" type="button">Ge oss utmaningen</button>
+                <button class="btn-secondary" id="discussMoreBtn" type="button">Bygg mer VIBE</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay fire-modal" id="slotModal">
+        <div class="overlay-card fire-card">
+            <div class="slot-shell">
+                <div>
+                    <p class="intro-kicker">Mystery</p>
+                    <h2 class="overlay-title">Slumpa en utmaning</h2>
+                </div>
+                <div class="slot-attempts" id="slotAttempts">1 spinn kvar</div>
+
+                <div class="slot-machine-frame">
+                    <div class="slot-reel" id="slotReel">
+                        <div class="slot-reel-label">VIBE-utmaning</div>
+                        <div class="slot-reel-window">
+                            <div class="slot-reel-track" id="slotTrack"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slot-result" id="slotResult">
+                    <p class="slot-result-title" id="slotResultTitle">...</p>
+                    <button class="btn-primary" id="slotRevealBtn" type="button">Visa utmaningen</button>
+                </div>
+
+                <div class="slot-actions">
+                    <button class="btn-primary" id="slotSpinBtn" type="button">Snurra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="followUpModal">
+        <div class="overlay-card">
+            <p class="intro-kicker">Följdfråga</p>
+            <h2 class="overlay-title">Diskutera</h2>
+            <p class="overlay-copy" id="followUpCopy">...</p>
+            <div class="overlay-actions">
+                <button class="btn-primary" id="followUpContinueBtn" type="button">Nästa</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay fire-modal" id="challengeModal">
+        <div class="overlay-card fire-card">
+            <div class="challenge-panel">
+                <p class="intro-kicker">Fysisk utmaning</p>
+                <h2 class="overlay-title" id="challengeTitle">...</h2>
+                <p class="challenge-text" id="challengeCopy">...</p>
+                <div class="timer-panel">
+                    <div class="challenge-timer" id="challengeTimer">--:--</div>
+                    <div class="timer-label" id="timerLabel">Läs utmaningen, klicka sen för tid</div>
+                </div>
+                <div class="timer-actions">
+                    <button class="btn-primary" id="timerStartBtn" type="button">Starta njutningen</button>
+                    <button class="btn-secondary" id="nextChallengeBtn" type="button">Vi vill ha en till utmaning</button>
+                    <button class="btn-secondary" id="challengeDiscussBtn" type="button">Fortsätt spela VIBE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../board-game/content.js"></script>
+    <script src="./content.js"></script>
+    <script>
+        const QUESTION_CONTENT = window.LUST_LOOPS_QUESTION_CONTENT || [];
+        const BOARD_MYSTERY_CHALLENGES = window.BoardGameContent?.mysteryChallengesByRound || {};
+        const PLAYER_STORAGE_KEY = "lustLoopsPlayers";
+        const VIBE_CHALLENGE_ROUNDS = [1, 2];
+        const MAX_VIBE_SCORE = 100;
+        const HOT_SCORE_INCREMENT = 10;
+        const SLOT_MACHINE_MAX_SPINS = 1;
+        const TIMER_MIN_SECONDS = 120;
+        const TIMER_MAX_SECONDS = 300;
+
+        const slotSpinStartAudio = new Audio("../board-game/assets/audio/spinwheelstart.wav");
+        const slotSpinStopAudio = new Audio("../board-game/assets/audio/spinwheelstop.wav");
+        const timerStopAudio = new Audio("../board-game/assets/audio/timerstop.wav");
+        [slotSpinStartAudio, slotSpinStopAudio, timerStopAudio].forEach((audio) => {
+            audio.preload = "auto";
+        });
+
+        const gameState = {
+            vibeScore: 0,
+            usedQuestionIndexes: new Set(),
+            gameStarted: false
+        };
+
+        let currentQuestion = null;
+        let timerIntervalId = null;
+        let timerEndsAt = 0;
+        let timerRemaining = 0;
+        let timerHasStarted = false;
+        let timerExtraUsed = false;
+        let selectedChallenge = null;
+        let slotMachineState = null;
+        let usedVibeChallengeKeys = new Set();
+        let usedVibeChallengeLabels = new Set();
+        let slotSpinIntervalId = null;
+        let slotSpinTimeoutId = null;
+        let afterFollowUp = null;
+
+        const view = {
+            topbar: document.getElementById("topbar"),
+            introOverlay: document.getElementById("introOverlay"),
+            introCopyFade: document.getElementById("introCopyFade"),
+            statementCard: document.getElementById("statementCard"),
+            finishCard: document.getElementById("finishCard"),
+            statementLeadName: document.getElementById("statementLeadName"),
+            statementInstruction: document.getElementById("statementInstruction"),
+            statementLeadLabel: document.getElementById("statementLeadLabel"),
+            statementText: document.getElementById("statementText"),
+            vibeScale: document.getElementById("vibeScale"),
+            vibeLevelLabel: document.getElementById("vibeLevelLabel"),
+            vibeFill: document.getElementById("vibeFill"),
+            vibeFire: document.getElementById("vibeFire"),
+            hotBtn: document.getElementById("hotBtn"),
+            notBtn: document.getElementById("notBtn"),
+            firePromptModal: document.getElementById("firePromptModal"),
+            openSlotBtn: document.getElementById("openSlotBtn"),
+            discussMoreBtn: document.getElementById("discussMoreBtn"),
+            followUpModal: document.getElementById("followUpModal"),
+            followUpCopy: document.getElementById("followUpCopy"),
+            followUpContinueBtn: document.getElementById("followUpContinueBtn"),
+            slotModal: document.getElementById("slotModal"),
+            slotReel: document.getElementById("slotReel"),
+            slotTrack: document.getElementById("slotTrack"),
+            slotAttempts: document.getElementById("slotAttempts"),
+            slotResult: document.getElementById("slotResult"),
+            slotResultTitle: document.getElementById("slotResultTitle"),
+            slotRevealBtn: document.getElementById("slotRevealBtn"),
+            slotSpinBtn: document.getElementById("slotSpinBtn"),
+            challengeModal: document.getElementById("challengeModal"),
+            challengeTitle: document.getElementById("challengeTitle"),
+            challengeCopy: document.getElementById("challengeCopy"),
+            challengeTimer: document.getElementById("challengeTimer"),
+            timerLabel: document.getElementById("timerLabel"),
+            timerStartBtn: document.getElementById("timerStartBtn"),
+            nextChallengeBtn: document.getElementById("nextChallengeBtn"),
+            challengeDiscussBtn: document.getElementById("challengeDiscussBtn")
+        };
+
+        function setQuestionMeta() {
+            view.statementCard.style.setProperty("--vibe-accent", "#ffd36a");
+            view.statementLeadName.textContent = "Vibe";
+            view.statementLeadLabel.textContent = "Fråga";
+        }
+
+        function applyStatementTextSizing(text) {
+            const normalizedLength = (text || "").replace(/\s+/g, " ").trim().length;
+            view.statementText.classList.remove("size-medium", "size-small", "size-xsmall");
+
+            if (normalizedLength >= 210) {
+                view.statementText.classList.add("size-xsmall");
+                return;
+            }
+
+            if (normalizedLength >= 160) {
+                view.statementText.classList.add("size-small");
+                return;
+            }
+
+            if (normalizedLength >= 105) {
+                view.statementText.classList.add("size-medium");
+            }
+        }
+
+        function hideOverlay(element) {
+            if (!element) return;
+            element.classList.remove("active");
+            updateTopbarVisibility();
+        }
+
+        function showOverlay(element) {
+            if (!element) return;
+            element.classList.add("active");
+            updateTopbarVisibility();
+        }
+
+        function setTopbarVisible(isVisible) {
+            view.topbar.hidden = !isVisible;
+        }
+
+        function updateTopbarVisibility() {
+            const overlayActive = [
+                view.introOverlay,
+                view.firePromptModal,
+                view.followUpModal,
+                view.slotModal,
+                view.challengeModal
+            ].some((element) => element?.classList.contains("active"));
+
+            const shouldShow = gameState.gameStarted
+                && !overlayActive
+                && (!view.statementCard.hidden || !view.finishCard.hidden);
+
+            setTopbarVisible(shouldShow);
+        }
+
+        function playUiSound(audio, { restart = true } = {}) {
+            if (!audio) return;
+            try {
+                if (restart) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+                audio.play().catch(() => {});
+            } catch {}
+        }
+
+        function clearSlotSpin() {
+            if (slotSpinIntervalId) {
+                window.clearInterval(slotSpinIntervalId);
+                slotSpinIntervalId = null;
+            }
+            if (slotSpinTimeoutId) {
+                window.clearTimeout(slotSpinTimeoutId);
+                slotSpinTimeoutId = null;
+            }
+            view.slotReel.classList.remove("is-spinning");
+        }
+
+        function clearChallengeTimer() {
+            if (timerIntervalId) {
+                window.clearInterval(timerIntervalId);
+                timerIntervalId = null;
+            }
+            timerEndsAt = 0;
+            timerRemaining = 0;
+        }
+
+        function renderVibeScale() {
+            const safeScore = Math.min(gameState.vibeScore, MAX_VIBE_SCORE);
+            const percent = Math.round((safeScore / MAX_VIBE_SCORE) * 100);
+            view.vibeScale.style.setProperty("--vibe-glow", String(percent / 100));
+            view.vibeFill.style.width = `${percent}%`;
+            view.vibeLevelLabel.textContent = percent >= 100 ? "FIRE" : "Fire";
+        }
+
+        function resetVibeScore() {
+            gameState.vibeScore = 0;
+            renderVibeScale();
+        }
+
+        function loadStoredPlayers() {
+            const defaults = {
+                player1: { name: "Spelare 1", gender: "male" },
+                player2: { name: "Spelare 2", gender: "female" },
+                preferences: { anal: true, bi: true, spanking: true, bdsm: true }
+            };
+
+            try {
+                const stored = JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY) || "{}");
+                return {
+                    player1: { ...defaults.player1, ...stored.player1 },
+                    player2: { ...defaults.player2, ...stored.player2 },
+                    preferences: { ...defaults.preferences, ...stored.preferences }
+                };
+            } catch {
+                return defaults;
+            }
+        }
+
+        function isChallengeAllowedByPreferences(challenge, preferences) {
+            const tags = Array.isArray(challenge?.tags) ? challenge.tags : [];
+            if (!preferences.anal && tags.includes("anal")) return false;
+            if (!preferences.bi && tags.includes("bi")) return false;
+            if (!preferences.spanking && tags.includes("spanking")) return false;
+            if (!preferences.bdsm && tags.includes("bdsm")) return false;
+            return true;
+        }
+
+        function normalizeMysteryChallenge(entry, roundIndex, challengeIndex) {
+            if (typeof entry === "string") {
+                return {
+                    key: `${roundIndex}:${challengeIndex}`,
+                    label: `${roundIndex + 1}${String.fromCharCode(65 + challengeIndex)}`,
+                    text: entry,
+                    tags: []
+                };
+            }
+
+            return {
+                key: `${roundIndex}:${challengeIndex}`,
+                label: entry?.label || `${roundIndex + 1}${String.fromCharCode(65 + challengeIndex)}`,
+                text: entry?.text || entry?.label || "",
+                tags: Array.isArray(entry?.tags) ? entry.tags : []
+            };
+        }
+
+        function getVibeChallengePool() {
+            const { preferences } = loadStoredPlayers();
+            const pool = VIBE_CHALLENGE_ROUNDS.flatMap((roundIndex) =>
+                (BOARD_MYSTERY_CHALLENGES[roundIndex] || [])
+                    .map((challenge, challengeIndex) => normalizeMysteryChallenge(challenge, roundIndex, challengeIndex))
+            );
+            const filteredPool = pool.filter((challenge) => isChallengeAllowedByPreferences(challenge, preferences));
+            return filteredPool.length ? filteredPool : pool;
+        }
+
+        function resolveChallengeText(text, actor, target) {
+            const actorName = (actor?.name || "Spelare 1").trim() || "Spelare 1";
+            const targetName = (target?.name || "Spelare 2").trim() || "Spelare 2";
+
+            return text
+                .replace(/\$ACTOR_POSSESSIVE/g, `${actorName}s`)
+                .replace(/\$TARGET_POSSESSIVE/g, `${targetName}s`)
+                .replace(/\$ACTORs/g, `${actorName}s`)
+                .replace(/\$TARGETs/g, `${targetName}s`)
+                .replace(/\$ACTOR/g, actorName)
+                .replace(/\$TARGET/g, targetName);
+        }
+
+        function prepareChallenge(challenge) {
+            const players = loadStoredPlayers();
+            const actorIsPlayerOne = Math.random() < 0.5;
+            const actor = actorIsPlayerOne ? players.player1 : players.player2;
+            const target = actorIsPlayerOne ? players.player2 : players.player1;
+
+            return {
+                label: challenge.label,
+                text: resolveChallengeText(challenge.text, actor, target)
+            };
+        }
+
+        function randomChoice(options) {
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        function getChallengeLabelKey(challenge) {
+            return (challenge?.label || "").trim().toLowerCase();
+        }
+
+        function renderSlotReel(challenges, selectedIndex = 0) {
+            if (!challenges.length) {
+                view.slotTrack.innerHTML = `
+                    <div class="slot-reel-item">FIRE</div>
+                    <div class="slot-reel-item active">Egen utmaning</div>
+                    <div class="slot-reel-item">FIRE</div>
+                `;
+                return;
+            }
+
+            const total = challenges.length;
+            const safeIndex = Math.max(0, Math.min(selectedIndex, total - 1));
+            const previous = challenges[(safeIndex - 1 + total) % total];
+            const current = challenges[safeIndex];
+            const next = challenges[(safeIndex + 1) % total];
+            view.slotTrack.innerHTML = `
+                <div class="slot-reel-item">${previous.label}</div>
+                <div class="slot-reel-item active">${current.label}</div>
+                <div class="slot-reel-item">${next.label}</div>
+            `;
+        }
+
+        function getAvailableSlotIndexes(challenges, usedIndexes = []) {
+            return challenges.map((_, index) => index).filter((index) => !usedIndexes.includes(index));
+        }
+
+        function setSlotButtonState({ spinning, attemptsUsed = 0, canSpin = true }) {
+            const attemptsLeft = Math.max(0, SLOT_MACHINE_MAX_SPINS - attemptsUsed);
+            view.slotAttempts.textContent = canSpin
+                ? `${attemptsLeft} spinn kvar`
+                : "Spinnet är använt";
+            view.slotSpinBtn.parentElement.hidden = !spinning && !canSpin;
+            view.slotSpinBtn.disabled = spinning || !canSpin;
+            view.slotSpinBtn.textContent = spinning ? "Snurrar..." : "Snurra";
+        }
+
+        function openFirePrompt() {
+            showOverlay(view.firePromptModal);
+        }
+
+        function vibrateIfAvailable(pattern) {
+            if (navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        }
+
+        function resetFireAndDiscuss() {
+            clearSlotSpin();
+            clearChallengeTimer();
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            selectedChallenge = null;
+            slotMachineState = null;
+            resetVibeScore();
+            hideOverlay(view.firePromptModal);
+            hideOverlay(view.slotModal);
+            hideOverlay(view.challengeModal);
+            advanceToNextQuestion();
+        }
+
+        function openSlotMachine() {
+            clearSlotSpin();
+            const allChallenges = getVibeChallengePool();
+            let challenges = allChallenges.filter((challenge) =>
+                !usedVibeChallengeKeys.has(challenge.key)
+                && !usedVibeChallengeLabels.has(getChallengeLabelKey(challenge))
+            );
+            if (!challenges.length && allChallenges.length) {
+                usedVibeChallengeKeys = new Set();
+                usedVibeChallengeLabels = new Set();
+                challenges = allChallenges;
+            }
+            slotMachineState = {
+                challenges,
+                usedChallengeIndexes: [],
+                challengeIndex: null,
+                challenge: null
+            };
+            selectedChallenge = null;
+            view.slotResult.classList.remove("active");
+            renderSlotReel(challenges, 0);
+            setSlotButtonState({ spinning: false, attemptsUsed: 0, canSpin: challenges.length > 0 });
+            hideOverlay(view.firePromptModal);
+            showOverlay(view.slotModal);
+        }
+
+        function spinSlotMachine() {
+            if (!slotMachineState) openSlotMachine();
+            const challenges = slotMachineState?.challenges || [];
+            const usedIndexes = Array.isArray(slotMachineState?.usedChallengeIndexes)
+                ? slotMachineState.usedChallengeIndexes
+                : [];
+            const availableIndexes = getAvailableSlotIndexes(challenges, usedIndexes);
+
+            if (!availableIndexes.length || usedIndexes.length >= SLOT_MACHINE_MAX_SPINS) {
+                setSlotButtonState({
+                    spinning: false,
+                    attemptsUsed: usedIndexes.length,
+                    canSpin: false
+                });
+                return;
+            }
+
+            clearSlotSpin();
+            view.slotResult.classList.remove("active");
+            setSlotButtonState({ spinning: true, attemptsUsed: usedIndexes.length, canSpin: true });
+            playUiSound(slotSpinStartAudio);
+            view.slotReel.classList.add("is-spinning");
+            slotSpinIntervalId = window.setInterval(() => {
+                renderSlotReel(challenges, randomChoice(availableIndexes));
+            }, 90);
+            slotSpinTimeoutId = window.setTimeout(() => {
+                clearSlotSpin();
+                playUiSound(slotSpinStopAudio);
+                const selectedIndex = randomChoice(availableIndexes);
+                const selected = prepareChallenge(challenges[selectedIndex]);
+                const nextUsedIndexes = [...usedIndexes, selectedIndex];
+                const canSpinAgain = nextUsedIndexes.length < SLOT_MACHINE_MAX_SPINS
+                    && getAvailableSlotIndexes(challenges, nextUsedIndexes).length > 0;
+
+                slotMachineState.challengeIndex = selectedIndex;
+                slotMachineState.challenge = selected;
+                slotMachineState.usedChallengeIndexes = nextUsedIndexes;
+                usedVibeChallengeKeys.add(challenges[selectedIndex].key);
+                usedVibeChallengeLabels.add(getChallengeLabelKey(challenges[selectedIndex]));
+                selectedChallenge = selected;
+                renderSlotReel(challenges, selectedIndex);
+                view.slotResultTitle.textContent = selected.label;
+                view.slotResult.classList.add("active");
+                setSlotButtonState({
+                    spinning: false,
+                    attemptsUsed: nextUsedIndexes.length,
+                    canSpin: canSpinAgain
+                });
+            }, 2000);
+        }
+
+        function formatTimer(seconds) {
+            const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+            const remainingSeconds = (seconds % 60).toString().padStart(2, "0");
+            return `${minutes}:${remainingSeconds}`;
+        }
+
+        function renderChallengeTimer() {
+            view.challengeTimer.textContent = formatTimer(timerRemaining);
+            if (!timerHasStarted) {
+                view.challengeTimer.textContent = "--:--";
+                view.timerLabel.textContent = "Läs utmaningen, klicka sen för tid";
+                view.timerStartBtn.textContent = "Starta njutningen";
+                view.timerStartBtn.disabled = false;
+                return;
+            }
+
+            if (timerRemaining > 0) {
+                view.timerLabel.textContent = "Tid kvar";
+                view.timerStartBtn.textContent = "Vi vill fortsätta lite till...";
+                view.timerStartBtn.disabled = true;
+                return;
+            }
+
+            view.timerLabel.textContent = timerExtraUsed ? "Tiden är ute" : "Tiden är ute - en extra runda finns";
+            view.timerStartBtn.textContent = "Vi vill fortsätta lite till...";
+            view.timerStartBtn.disabled = timerExtraUsed;
+        }
+
+        function openChallengeCard() {
+            const challenge = selectedChallenge || slotMachineState?.challenge;
+            if (!challenge) return;
+            clearChallengeTimer();
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            view.challengeTitle.textContent = challenge.label;
+            view.challengeCopy.textContent = challenge.text;
+            hideOverlay(view.slotModal);
+            showOverlay(view.challengeModal);
+            renderChallengeTimer();
+        }
+
+        function finishTimer() {
+            clearChallengeTimer();
+            renderChallengeTimer();
+            playUiSound(timerStopAudio);
+            if (navigator.vibrate) {
+                navigator.vibrate([220, 120, 220]);
+            }
+        }
+
+        function syncTimerState() {
+            if (!timerEndsAt) return;
+            timerRemaining = Math.max(0, Math.ceil((timerEndsAt - Date.now()) / 1000));
+            renderChallengeTimer();
+            if (timerRemaining <= 0) {
+                finishTimer();
+            }
+        }
+
+        function startChallengeTimer() {
+            if (!timerHasStarted) {
+                timerHasStarted = true;
+            } else {
+                if (timerRemaining > 0 || timerExtraUsed) return;
+                timerExtraUsed = true;
+            }
+
+            const seconds = Math.floor(Math.random() * (TIMER_MAX_SECONDS - TIMER_MIN_SECONDS + 1)) + TIMER_MIN_SECONDS;
+            timerEndsAt = Date.now() + (seconds * 1000);
+            timerRemaining = seconds;
+            renderChallengeTimer();
+            timerIntervalId = window.setInterval(syncTimerState, 250);
+        }
+
+        function openAnotherChallenge() {
+            clearChallengeTimer();
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            selectedChallenge = null;
+            hideOverlay(view.challengeModal);
+            openSlotMachine();
+        }
+
+        function finishChallengeAndDiscuss() {
+            resetFireAndDiscuss();
+        }
+
+        function renderQuestion() {
+            const question = currentQuestion;
+            if (!question) return;
+
+            view.statementCard.hidden = false;
+            view.finishCard.hidden = true;
+            updateTopbarVisibility();
+            applyStatementTextSizing(question.text);
+            view.statementText.textContent = question.text;
+            setQuestionMeta();
+            renderVibeScale();
+            view.statementInstruction.textContent = "Känn efter tillsammans - ett spel som öppnar för dialog...";
+        }
+
+        function renderFinished() {
+            view.statementCard.hidden = true;
+            view.finishCard.hidden = false;
+            updateTopbarVisibility();
+        }
+
+        function getNextQuestion() {
+            const remainingQuestions = QUESTION_CONTENT
+                .map((question, index) => ({ question, index }))
+                .filter(({ question, index }) =>
+                    question?.text && !gameState.usedQuestionIndexes.has(index)
+                );
+            if (!remainingQuestions.length) return null;
+            return remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
+        }
+
+        function advanceToNextQuestion() {
+            const nextQuestion = getNextQuestion();
+
+            if (!nextQuestion) {
+                currentQuestion = null;
+                renderFinished();
+                return;
+            }
+
+            currentQuestion = nextQuestion.question;
+            gameState.usedQuestionIndexes.add(nextQuestion.index);
+            renderQuestion();
+        }
+
+        function continueAfterVote() {
+            if (gameState.vibeScore >= MAX_VIBE_SCORE) {
+                openFirePrompt();
+                return;
+            }
+
+            view.statementCard.classList.add("question-fade");
+            window.setTimeout(() => {
+                view.statementCard.classList.remove("question-fade");
+                advanceToNextQuestion();
+            }, 240);
+        }
+
+        function openFollowUpModal(followUpText) {
+            view.followUpCopy.textContent = followUpText;
+            showOverlay(view.followUpModal);
+        }
+
+        function castVote(type) {
+            if (!currentQuestion) return;
+            const previousScore = gameState.vibeScore;
+            if (type === "hot") {
+                gameState.vibeScore = Math.min(MAX_VIBE_SCORE, gameState.vibeScore + HOT_SCORE_INCREMENT);
+                const reachedFire = previousScore < MAX_VIBE_SCORE && gameState.vibeScore >= MAX_VIBE_SCORE;
+                vibrateIfAvailable(reachedFire ? [700, 180, 700, 180, 700] : 700);
+            }
+            renderVibeScale();
+
+            if (type === "hot" && currentQuestion.followUp) {
+                afterFollowUp = continueAfterVote;
+                openFollowUpModal(currentQuestion.followUp);
+                return;
+            }
+
+            continueAfterVote();
+        }
+
+        function startGame() {
+            gameState.vibeScore = 0;
+            gameState.usedQuestionIndexes = new Set();
+            gameState.gameStarted = true;
+            hideOverlay(view.introOverlay);
+            advanceToNextQuestion();
+        }
+
+        function restartGame() {
+            currentQuestion = null;
+            gameState.usedQuestionIndexes = new Set();
+            usedVibeChallengeKeys = new Set();
+            usedVibeChallengeLabels = new Set();
+            gameState.vibeScore = 0;
+            gameState.gameStarted = false;
+            view.introCopyFade.classList.remove("expanded");
+            clearSlotSpin();
+            clearChallengeTimer();
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            selectedChallenge = null;
+            slotMachineState = null;
+            hideOverlay(view.firePromptModal);
+            hideOverlay(view.followUpModal);
+            hideOverlay(view.slotModal);
+            hideOverlay(view.challengeModal);
+            showOverlay(view.introOverlay);
+            view.statementCard.hidden = true;
+            view.finishCard.hidden = true;
+            updateTopbarVisibility();
+        }
+
+        function init() {
+            view.statementCard.hidden = true;
+            view.finishCard.hidden = true;
+            showOverlay(view.introOverlay);
+            updateTopbarVisibility();
+        }
+
+        view.hotBtn.addEventListener("click", () => castVote("hot"));
+        view.notBtn.addEventListener("click", () => castVote("not"));
+        view.followUpContinueBtn.addEventListener("click", () => {
+            const nextStep = afterFollowUp;
+            afterFollowUp = null;
+            hideOverlay(view.followUpModal);
+            if (nextStep) nextStep();
+        });
+        view.openSlotBtn.addEventListener("click", openSlotMachine);
+        view.discussMoreBtn.addEventListener("click", resetFireAndDiscuss);
+        view.slotSpinBtn.addEventListener("click", spinSlotMachine);
+        view.slotRevealBtn.addEventListener("click", openChallengeCard);
+        view.timerStartBtn.addEventListener("click", startChallengeTimer);
+        view.nextChallengeBtn.addEventListener("click", openAnotherChallenge);
+        view.challengeDiscussBtn.addEventListener("click", finishChallengeAndDiscuss);
+        document.getElementById("introStartBtn").addEventListener("click", startGame);
+        document.getElementById("globalBackBtn").addEventListener("click", () => {
+            window.location.href = "../index.html?fade=1";
+        });
+        document.getElementById("introBackBtn").addEventListener("click", () => {
+            window.location.href = "../index.html?fade=1";
+        });
+        document.getElementById("restartBtn").addEventListener("click", restartGame);
+        document.getElementById("backBtn").addEventListener("click", () => {
+            window.location.href = "../index.html?fade=1";
+        });
+        document.getElementById("finishBackBtn").addEventListener("click", () => {
+            window.location.href = "../index.html?fade=1";
+        });
+
+        window.addEventListener("load", init);
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("../service-worker.js").catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="L-L">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../assets/images/l-l_applogo.png">
+    <link rel="icon" type="image/png" href="../assets/images/l-l_applogo.png">
+    <link rel="preload" as="image" href="../assets/images/l-l_background.png">
+    <link rel="stylesheet" href="./dice.css">
+    <title>Lust Loops - Lustens Tärningar</title>
+</head>
+<body>
+    <header class="dice-header">
+        <div>
+            <p class="eyebrow">Lust Loops</p>
+            <h1>Lustens Tärningar</h1>
+        </div>
+        <button class="ghost-btn" id="backBtn" type="button">Tillbaka</button>
+    </header>
+
+    <main class="dice-shell">
+        <section class="category-panel" aria-label="Välj kategori">
+            <p class="section-label">Kategori</p>
+            <div class="category-grid" id="categoryGrid"></div>
+        </section>
+
+        <section class="dice-board" aria-label="Tärningar">
+            <button class="dice-card" id="actionDie" type="button" aria-label="Rulla handling">
+                <span class="dice-label">Handlingen</span>
+                <span class="dice-value" id="actionValue">Rulla</span>
+            </button>
+            <button class="dice-card" id="targetDie" type="button" aria-label="Rulla mål">
+                <span class="dice-label">Målet</span>
+                <span class="dice-value" id="targetValue">Tärning</span>
+            </button>
+        </section>
+
+        <button class="roll-btn" id="rollBtn" type="button">Rulla tärningarna</button>
+    </main>
+
+    <script src="./dice.js"></script>
+</body>
+</html>
