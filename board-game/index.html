@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="L-L">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../assets/images/l-l_applogo.png">
+    <link rel="icon" type="image/png" href="../assets/images/l-l_applogo.png">
+    <title>Lust Loops - Äventyret</title>
+    <link rel="preload" as="image" href="../assets/images/l-l_background.png">
+    <link rel="preload" as="image" href="../assets/images/l-l_startup_image.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+        
+        html, body { min-height: 100%; overscroll-behavior-y: none; }
+        body {
+            background:
+                linear-gradient(180deg, rgba(6,6,6,0.68), rgba(6,6,6,0.86)),
+                url('../assets/images/l-l_background.png') center / cover no-repeat fixed,
+                #0a0a0a;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* --- SPELPLANEN --- */
+        .board-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 130;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: max(14px, env(safe-area-inset-top)) 16px 14px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.94), rgba(0,0,0,0.8));
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+        .board-title {
+            color: rgba(255,255,255,0.88);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+        }
+        .game-wrapper { padding: calc(78px + env(safe-area-inset-top)) 0 calc(220px + env(safe-area-inset-bottom)) 0; display: flex; justify-content: center; }
+        .board-stage {
+            position: relative;
+            width: min(96vw, 560px);
+            aspect-ratio: 1536 / 2752;
+            background: url('./assets/images/board.png') center / contain no-repeat;
+        }
+        .row { position: absolute; width: 66px; height: 66px; transform: translate(-50%, -50%); }
+        
+        .tile-container { width: 100%; height: 100%; position: relative; }
+        .tile {
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+            z-index: 5;
+            position: relative;
+        }
+        .tile-label { display: none; }
+        /* --- SPELARPRICKAR --- */
+        .player-token { position: absolute; width: 22px; height: 22px; border-radius: 50%; transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1); z-index: 50; pointer-events: none; }
+        .p-blue { background-color: #00e5ff; box-shadow: 0 0 20px #00e5ff; }
+        .p-pink { background-color: #ff007f; box-shadow: 0 0 20px #ff007f; }
+        .board-dice-result {
+            position: fixed;
+            width: 64px;
+            aspect-ratio: 1;
+            z-index: 125;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.88);
+            transition: opacity 0.2s ease, transform 0.24s ease;
+            will-change: transform, opacity, left, top;
+        }
+        .board-dice-result.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .board-dice-result.hidden {
+            display: none;
+        }
+        .board-dice-result .dice-face {
+            position: absolute;
+            inset: 0;
+        }
+        .board-dice-result .dice-body {
+            border-radius: 12px;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.48),
+                inset -8px -9px 16px rgba(40,24,8,0.24),
+                0 12px 22px rgba(0,0,0,0.36),
+                0 0 18px var(--dice-accent);
+        }
+        .challenge-trigger {
+            --trigger-accent: rgba(255,255,255,0.14);
+            --trigger-glow: rgba(255,255,255,0.16);
+            position: absolute;
+            z-index: 120;
+            pointer-events: auto;
+            min-width: 232px;
+            max-width: 272px;
+            padding: 18px 18px 20px;
+            border-radius: 30px;
+            border: 1px solid color-mix(in srgb, var(--trigger-accent) 72%, rgba(255,255,255,0.08));
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+                rgba(8,8,8,0.78);
+            backdrop-filter: blur(18px);
+            transform: translate(-50%, -50%);
+            box-shadow:
+                0 24px 44px rgba(0,0,0,0.42),
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 0 0 1px color-mix(in srgb, var(--trigger-accent) 28%, rgba(255,255,255,0.03)),
+                0 0 26px var(--trigger-glow);
+            touch-action: manipulation;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            overflow: visible;
+        }
+        .challenge-trigger.hidden { display: none; }
+        .turn-trigger-board { position: absolute; z-index: 120; pointer-events: auto; }
+        .board-nav-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(10,10,10,0.96);
+            color: rgba(255,255,255,0.9);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.24);
+            backdrop-filter: blur(10px);
+        }
+        .trigger-player {
+            max-width: 240px;
+            font-size: 23px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            line-height: 1.1;
+            text-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+        .trigger-name {
+            max-width: 240px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            line-height: 1.2;
+            opacity: 0.92;
+            text-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+        .trigger-action {
+            max-width: 152px;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        .trigger-core {
+            min-width: 168px;
+            min-height: 58px;
+            padding: 0 24px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 30% 25%, rgba(255,255,255,0.18), rgba(255,255,255,0) 34%),
+                linear-gradient(180deg, color-mix(in srgb, var(--trigger-accent) 34%, rgba(24,24,24,0.98)), rgba(10,10,10,0.98));
+            border: 1px solid color-mix(in srgb, var(--trigger-accent) 72%, rgba(255,255,255,0.12));
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.08),
+                0 16px 28px rgba(0,0,0,0.34),
+                0 0 26px var(--trigger-glow);
+        }
+        .visitor-counter {
+            position: fixed;
+            right: 14px;
+            bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px));
+            z-index: 110;
+            opacity: 0.14;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+        .visitor-counter:hover,
+        .visitor-counter:focus-within {
+            opacity: 0.45;
+        }
+        .visitor-counter-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 72px;
+            min-height: 22px;
+            padding: 0 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(10,10,10,0.88);
+            color: rgba(255,255,255,0.72);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* --- DYNAMISKA FÄRGER (TEXT) --- */
+        .text-p1 { color: #00e5ff; text-shadow: 0 0 15px rgba(0, 229, 255, 0.8); }
+        .text-p2 { color: #ff007f; text-shadow: 0 0 15px rgba(255, 0, 127, 0.8); }
+        
+        /* --- MODALER --- */
+        .modal { position: fixed; inset: 0; background: radial-gradient(circle at top, rgba(128,0,32,0.18), transparent 42%), rgba(0,0,0,0.86); backdrop-filter: blur(12px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)); opacity: 0; pointer-events: none; transition: opacity 0.6s ease; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0) 18%),
+                linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 45px 30px;
+            border-radius: 40px;
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 36px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            transform: translateY(60px) scale(0.85);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal.active .modal-content { transform: translateY(0) scale(1); }
+        .challenge-modal-content {
+            --challenge-accent: rgba(255,255,255,0.14);
+            --challenge-accent-glow: rgba(255,255,255,0.12);
+            max-width: 720px;
+            padding: 32px;
+            border-radius: 44px;
+            text-align: left;
+            border-color: color-mix(in srgb, var(--challenge-accent) 72%, rgba(255,255,255,0.1));
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.9),
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 0 0 1px color-mix(in srgb, var(--challenge-accent) 34%, rgba(255,255,255,0.02)),
+                0 0 34px var(--challenge-accent-glow);
+        }
+        .challenge-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        .challenge-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .challenge-lead {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: rgba(255,255,255,0.76);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+        }
+        .challenge-lead-name {
+            color: var(--player-accent, #fff);
+            text-shadow: 0 0 16px color-mix(in srgb, var(--player-accent, #fff) 34%, transparent);
+        }
+        .challenge-lead-separator {
+            color: rgba(255,255,255,0.28);
+        }
+        .challenge-lead-label {
+            color: #d8a8b8;
+        }
+        .challenge-kicker {
+            color: rgba(255,255,255,0.36);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.28em;
+            white-space: nowrap;
+        }
+        .challenge-text {
+            font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+            line-height: 1.16;
+            color: #f5f5f5;
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: -0.04em;
+            margin: 0;
+            text-wrap: balance;
+        }
+        .challenge-text.size-medium {
+            font-size: clamp(1.5rem, 3vw, 2.1rem);
+            line-height: 1.18;
+        }
+        .challenge-text.size-small {
+            font-size: clamp(1.28rem, 2.45vw, 1.72rem);
+            line-height: 1.24;
+            letter-spacing: -0.03em;
+        }
+        .challenge-text.size-xsmall {
+            font-size: clamp(1.12rem, 2.1vw, 1.42rem);
+            line-height: 1.28;
+            letter-spacing: -0.02em;
+        }
+        .challenge-player-name {
+            font: inherit;
+            color: var(--player-accent, #f5f5f5);
+            text-shadow: 0 0 16px color-mix(in srgb, var(--player-accent, #fff) 28%, transparent);
+        }
+        .challenge-footer {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 18px;
+            align-items: stretch;
+        }
+        .timer-panel {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            min-height: 120px;
+            padding: 24px 26px;
+            border-radius: 28px;
+            border: 1px solid var(--timer-accent-soft, rgba(255,255,255,0.08));
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+                rgba(0,0,0,0.46);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 0 1px rgba(255,255,255,0.02);
+        }
+        .timer-label {
+            color: rgba(203,213,225,0.48);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+        }
+        .timer-panel-active .timer-label {
+            color: var(--timer-accent-soft, rgba(203,213,225,0.48));
+        }
+        .timer-test-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 30px;
+            padding: 0 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.72);
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+        }
+        .timer-test-btn:active { scale: 0.94; }
+        .challenge-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            min-width: 230px;
+        }
+        .slot-modal-content {
+            max-width: 760px;
+            padding: 30px;
+            border-radius: 44px;
+            text-align: left;
+            background:
+                radial-gradient(circle at top, rgba(198,152,61,0.18), transparent 34%),
+                linear-gradient(180deg, rgba(96,12,32,0.94), rgba(22,7,11,0.98));
+            border: 1px solid rgba(212,175,85,0.28);
+            box-shadow:
+                0 30px 70px rgba(0,0,0,0.52),
+                inset 0 1px 0 rgba(255,233,184,0.14);
+        }
+        #slotModal {
+            align-items: flex-start;
+            justify-content: center;
+        }
+        #slotModal .slot-modal-content {
+            flex-shrink: 0;
+            margin: auto 0;
+        }
+        .slot-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .slot-kicker {
+            color: rgba(255,235,196,0.72);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+        }
+        .slot-title {
+            margin: 0;
+            color: #f7ecd4;
+            font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.02;
+            text-transform: uppercase;
+        }
+        .slot-copy {
+            margin: 0;
+            color: rgba(255,241,219,0.76);
+            font-size: 15px;
+            line-height: 1.65;
+        }
+        .slot-attempts {
+            align-self: center;
+            color: rgba(255,235,196,0.72);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+        .slot-machine-frame {
+            position: relative;
+            padding: 22px;
+            border-radius: 34px;
+            border: 1px solid rgba(225,186,88,0.36);
+            background:
+                linear-gradient(180deg, rgba(255,215,117,0.12), rgba(255,215,117,0.03)),
+                rgba(14,6,8,0.72);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,240,195,0.08),
+                0 18px 36px rgba(0,0,0,0.28);
+        }
+        .slot-machine-frame::before,
+        .slot-machine-frame::after {
+            content: "";
+            position: absolute;
+            left: 18px;
+            right: 18px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,226,155,0.52), transparent);
+        }
+        .slot-machine-frame::before { top: 14px; }
+        .slot-machine-frame::after { bottom: 14px; }
+        .slot-reels {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 16px;
+        }
+        .slot-reel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .slot-reel-label {
+            color: rgba(255,231,183,0.56);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+            text-align: center;
+        }
+        .slot-reel-window {
+            position: relative;
+            overflow: hidden;
+            min-height: 156px;
+            border-radius: 26px;
+            border: 1px solid rgba(255,223,148,0.18);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0)),
+                rgba(10,4,6,0.86);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+        }
+        .slot-reel-window::before,
+        .slot-reel-window::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 26px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .slot-reel-window::before {
+            top: 0;
+            background: linear-gradient(180deg, rgba(10,4,6,0.96), transparent);
+        }
+        .slot-reel-window::after {
+            bottom: 0;
+            background: linear-gradient(0deg, rgba(10,4,6,0.96), transparent);
+        }
+        .slot-reel-track {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 156px;
+            transition: filter 0.2s ease, transform 0.2s ease;
+        }
+        .slot-reel.is-spinning .slot-reel-track {
+            filter: blur(6px);
+            transform: scale(0.985);
+        }
+        .slot-reel-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 14px 12px;
+            text-align: center;
+            color: #fff2d5;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+            opacity: 0.42;
+            filter: blur(2.8px);
+            transition: opacity 0.2s ease, filter 0.2s ease;
+        }
+        .slot-reel-item.active {
+            color: #fff7e6;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            opacity: 1;
+            filter: none;
+            text-shadow: 0 0 18px rgba(255,224,145,0.22);
+            position: relative;
+        }
+        .slot-reel-item.active::before,
+        .slot-reel-item.active::after {
+            color: rgba(255,224,145,0.9);
+            font-weight: 900;
+        }
+        .slot-reel-item.active::before {
+            content: "★★★\00a0\00a0\00a0";
+        }
+        .slot-reel-item.active::after {
+            content: "\00a0\00a0\00a0★★★";
+        }
+        .slot-result {
+            display: none;
+            padding: 20px 22px;
+            border-radius: 28px;
+            border: 1px solid rgba(255,225,155,0.12);
+            background: rgba(8,4,5,0.48);
+        }
+        .slot-result.active { display: block; }
+        .slot-result-label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255,231,183,0.56);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.24em;
+        }
+        .slot-result-text {
+            margin: 0;
+            color: #fff4de;
+            font-size: clamp(1.1rem, 2.6vw, 1.4rem);
+            line-height: 1.42;
+            font-style: italic;
+        }
+        .slot-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .slot-spin-btn {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,236,188,0.24), transparent 44%),
+                linear-gradient(180deg, #cb9c2f 0%, #8b6117 100%);
+            color: #fff7dd;
+            border: 1px solid rgba(255,226,158,0.24);
+            box-shadow:
+                inset 0 1px 0 rgba(255,248,220,0.2),
+                0 16px 30px rgba(127,84,16,0.3),
+                0 0 30px rgba(255,214,130,0.18);
+        }
+        .slot-spin-btn:disabled {
+            background: linear-gradient(180deg, rgba(145,116,49,0.56), rgba(89,64,15,0.56));
+            color: rgba(27,13,5,0.62);
+        }
+        .slot-pick-btn.ready {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,236,188,0.24), transparent 44%),
+                linear-gradient(180deg, #cb9c2f 0%, #8b6117 100%);
+            color: #fff7dd;
+            border-color: rgba(255,226,158,0.24);
+            box-shadow:
+                inset 0 1px 0 rgba(255,248,220,0.2),
+                0 16px 30px rgba(127,84,16,0.3),
+                0 0 30px rgba(255,214,130,0.18);
+        }
+        .round-choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .choice-card {
+            text-align: left;
+            padding: 20px 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            transition: all 0.25s ease;
+        }
+        .choice-card:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+        }
+        .choice-title {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: #f5f5f5;
+        }
+        .choice-copy {
+            display: block;
+            color: rgba(229,231,235,0.7);
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .level-select-grid {
+            display: grid;
+            gap: 12px;
+            margin: 0 0 18px;
+            text-align: left;
+        }
+        .level-option input { display: none; }
+        .level-option label {
+            display: block;
+            padding: 16px 18px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+            transition: border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+            cursor: pointer;
+        }
+        .level-option-title {
+            display: block;
+            margin-bottom: 6px;
+            color: #f5f5f5;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+        .level-option-copy {
+            display: block;
+            color: rgba(229,231,235,0.7);
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .level-option input:checked + label {
+            border-color: rgba(255,255,255,0.22);
+            background:
+                radial-gradient(circle at top left, rgba(0,229,255,0.34), transparent 46%),
+                radial-gradient(circle at bottom right, rgba(255,0,127,0.36), transparent 48%),
+                linear-gradient(135deg, rgba(0,229,255,0.2), rgba(255,255,255,0.04) 44%, rgba(255,0,127,0.22)),
+                rgba(14,14,14,0.96);
+            box-shadow:
+                0 18px 32px rgba(0,0,0,0.24),
+                0 0 0 1px rgba(255,255,255,0.05),
+                0 0 34px rgba(0,229,255,0.22),
+                0 0 38px rgba(255,0,127,0.24);
+        }
+        .welcome-note {
+            margin: 0 0 22px;
+            color: rgba(229,231,235,0.58);
+            font-size: 12px;
+            line-height: 1.6;
+            letter-spacing: 0.04em;
+        }
+        .gear-panel {
+            margin: 0 0 18px;
+            padding: 18px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
+            text-align: left;
+        }
+        .gear-title {
+            margin: 0 0 8px;
+            color: rgba(255,255,255,0.92);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .gear-copy {
+            margin: 0 0 14px;
+            color: rgba(229,231,235,0.66);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+        .gear-list {
+            margin: 0;
+            padding-left: 18px;
+            color: rgba(255,255,255,0.86);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            line-height: 1.9;
+        }
+        
+        /* --- TÄRNING --- */
+        .dice-modal {
+            background: radial-gradient(circle at top, rgba(128,0,32,0.18), transparent 42%), rgba(0,0,0,0.7);
+            align-items: center;
+        }
+        .dice-modal-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+        .dice-display-wrap {
+            position: relative;
+            width: 168px;
+            aspect-ratio: 1;
+        }
+        .dice-face {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.24s ease;
+            will-change: transform, opacity;
+            transform-origin: 50% 50%;
+            --dice-accent: rgba(255,255,255,0.18);
+        }
+        .dice-face.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .dice-body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background:
+                radial-gradient(circle at 28% 22%, rgba(255,255,255,0.78), transparent 30%),
+                linear-gradient(145deg, #f3f0e7 0%, #c6ad76 54%, #765622 100%);
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.52),
+                inset -16px -18px 30px rgba(40,24,8,0.24),
+                0 22px 34px rgba(0,0,0,0.4);
+        }
+        .dice-face.result-win .dice-body {
+            box-shadow:
+                inset 0 2px 0 rgba(255,255,255,0.52),
+                inset -16px -18px 30px rgba(40,24,8,0.24),
+                0 0 0 1px rgba(255,255,255,0.03),
+                0 22px 34px rgba(0,0,0,0.4),
+                0 0 28px var(--dice-accent);
+        }
+        .dice-pip {
+            position: absolute;
+            width: 16%;
+            aspect-ratio: 1;
+            border-radius: 999px;
+            background: #33110f;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.8);
+            transition: opacity 0.18s ease;
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.26);
+        }
+        .dice-pip.p1 { left: 28%; top: 28%; }
+        .dice-pip.p2 { left: 50%; top: 28%; }
+        .dice-pip.p3 { left: 72%; top: 28%; }
+        .dice-pip.p4 { left: 28%; top: 50%; }
+        .dice-pip.p5 { left: 50%; top: 50%; }
+        .dice-pip.p6 { left: 72%; top: 50%; }
+        .dice-pip.p7 { left: 28%; top: 72%; }
+        .dice-pip.p8 { left: 50%; top: 72%; }
+        .dice-pip.p9 { left: 72%; top: 72%; }
+        .dice-face[data-face="1"] .p5,
+        .dice-face[data-face="2"] .p1,
+        .dice-face[data-face="2"] .p9,
+        .dice-face[data-face="3"] .p1,
+        .dice-face[data-face="3"] .p5,
+        .dice-face[data-face="3"] .p9,
+        .dice-face[data-face="4"] .p1,
+        .dice-face[data-face="4"] .p3,
+        .dice-face[data-face="4"] .p7,
+        .dice-face[data-face="4"] .p9,
+        .dice-face[data-face="5"] .p1,
+        .dice-face[data-face="5"] .p3,
+        .dice-face[data-face="5"] .p5,
+        .dice-face[data-face="5"] .p7,
+        .dice-face[data-face="5"] .p9,
+        .dice-face[data-face="6"] .p1,
+        .dice-face[data-face="6"] .p3,
+        .dice-face[data-face="6"] .p4,
+        .dice-face[data-face="6"] .p6,
+        .dice-face[data-face="6"] .p7,
+        .dice-face[data-face="6"] .p9 {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .dice-rolling {
+            animation: diceSpinLoop 0.62s cubic-bezier(.2,.9,.2,1) infinite;
+        }
+        @keyframes diceSpinLoop {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(360deg) scale(0.94); }
+            100% { transform: rotate(720deg) scale(1); }
+        }
+
+        /* --- TIMER --- */
+        #timer-display { font-variant-numeric: tabular-nums; font-weight: 900; color: #800020; text-shadow: 0 0 15px rgba(128,0,32,0.6); }
+        .timer-inactive { color: #222 !important; text-shadow: none !important; }
+        
+        .btn-primary { background: radial-gradient(circle at 50% 0%, rgba(255,236,188,0.24), transparent 44%), linear-gradient(180deg, #cb9c2f 0%, #8b6117 100%); color: #fff7dd; font-weight: 700; padding: 16px 0; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; transition: all 0.3s; width: 100%; border: 1px solid rgba(255,226,158,0.24); box-shadow: inset 0 1px 0 rgba(255,248,220,0.2), 0 16px 30px rgba(127,84,16,0.3), 0 0 30px rgba(255,214,130,0.18); }
+        .btn-secondary { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); color: rgba(255,255,255,0.88); font-weight: 700; padding: 16px 0; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; transition: all 0.3s; width: 100%; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 12px 24px rgba(0,0,0,0.18); }
+        .btn-primary:active { scale: 0.95; }
+        .btn-secondary:active { scale: 0.95; }
+        .btn-primary:disabled,
+        .btn-secondary:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
+        @media (max-width: 640px) {
+            .game-wrapper { padding-top: calc(74px + env(safe-area-inset-top)); padding-bottom: calc(200px + env(safe-area-inset-bottom)); }
+            .row { width: 72px; height: 72px; }
+            .player-token { width: 24px; height: 24px; }
+            .challenge-trigger {
+                padding: 14px 18px;
+                min-width: 220px;
+            }
+            .challenge-modal-content {
+                padding: 26px 22px;
+                border-radius: 34px;
+            }
+            .challenge-shell { gap: 22px; }
+            .challenge-topline {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .challenge-text {
+                font-size: clamp(1.7rem, 9vw, 2.35rem);
+                line-height: 1.12;
+            }
+            .challenge-footer {
+                grid-template-columns: 1fr;
+            }
+            .challenge-actions {
+                min-width: 0;
+            }
+            .slot-modal-content {
+                padding: 24px 20px;
+                border-radius: 34px;
+            }
+            .slot-actions {
+                grid-template-columns: 1fr;
+            }
+            .modal {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .round-choice-grid {
+                grid-template-columns: 1fr;
+            }
+            .dice-display-wrap {
+                width: 148px;
+            }
+            .board-dice-result {
+                width: 56px;
+            }
+            .dice-body {
+                border-radius: 22px;
+            }
+            .challenge-trigger {
+                min-width: 212px;
+                max-width: 236px;
+                padding: 16px 16px 18px;
+            }
+            .trigger-core {
+                min-width: 152px;
+                min-height: 54px;
+                padding: 0 20px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .board-stage { width: min(72vw, 520px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="board-header" id="boardHeader">
+        <div class="board-title">Lust Loops - Äventyret</div>
+        <button class="board-nav-btn" onclick="goBack()">Tillbaka</button>
+    </div>
+    <div class="game-wrapper" id="board"></div>
+    <div id="boardDiceResult" class="board-dice-result hidden" aria-hidden="true">
+        <div id="boardDiceFace" class="dice-face result-win" data-face="1">
+            <div class="dice-body">
+                <span class="dice-pip p1"></span><span class="dice-pip p2"></span><span class="dice-pip p3"></span>
+                <span class="dice-pip p4"></span><span class="dice-pip p5"></span><span class="dice-pip p6"></span>
+                <span class="dice-pip p7"></span><span class="dice-pip p8"></span><span class="dice-pip p9"></span>
+            </div>
+        </div>
+    </div>
+    <button id="challengeTrigger" class="challenge-trigger hidden" onclick="openChallengeFromBoard()"></button>
+    <button id="turnTriggerBoard" class="challenge-trigger turn-trigger-board hidden" onclick="openDiceFromBoard()"></button>
+
+    <div id="diceModal" class="modal dice-modal">
+        <div class="dice-modal-layout" id="diceCard">
+            <div id="dice-player-name" class="text-2xl font-black uppercase tracking-widest mb-6">Namn</div>
+            <div class="dice-display-wrap">
+                <div id="dice-modal-display" class="dice-face dice-display" data-face="1">
+                    <div class="dice-body">
+                        <span class="dice-pip p1"></span><span class="dice-pip p2"></span><span class="dice-pip p3"></span>
+                        <span class="dice-pip p4"></span><span class="dice-pip p5"></span><span class="dice-pip p6"></span>
+                        <span class="dice-pip p7"></span><span class="dice-pip p8"></span><span class="dice-pip p9"></span>
+                    </div>
+                </div>
+                <div id="dice-modal-result" class="dice-face dice-result hidden" data-face="1">
+                    <div class="dice-body">
+                        <span class="dice-pip p1"></span><span class="dice-pip p2"></span><span class="dice-pip p3"></span>
+                        <span class="dice-pip p4"></span><span class="dice-pip p5"></span><span class="dice-pip p6"></span>
+                        <span class="dice-pip p7"></span><span class="dice-pip p8"></span><span class="dice-pip p9"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="challengeModal" class="modal">
+        <div class="modal-content challenge-modal-content">
+            <div class="challenge-shell">
+                <div class="challenge-topline">
+                    <div id="modalLead" class="challenge-lead">Spelare - Kategori</div>
+                    <div id="challengeLevel" class="challenge-kicker">Nivå 1 av 4</div>
+                </div>
+                <p id="modalText" class="challenge-text">...</p>
+                
+                <div class="challenge-footer">
+                    <div class="timer-panel">
+                        <button id="timerTestBtn" onclick="startTestTimer()" class="timer-test-btn" type="button">3s</button>
+                        <div id="timer-display" class="text-4xl mb-1 timer-inactive">--:--</div>
+                        <div id="timer-label" class="timer-label">Läs utmaningen, klicka sen för tid</div>
+                    </div>
+
+                    <div class="challenge-actions">
+                        <button id="timerBtn" onclick="randomizeTimer()" class="btn-primary">
+                            Starta njutningen
+                        </button>
+                        <button id="boardViewBtn" onclick="showBoardFromChallenge()" class="btn-secondary">
+                            Visa spelplanen
+                        </button>
+                        <button id="doneBtn" onclick="closeModal()" class="btn-secondary">
+                            Vi är klara
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="slotModal" class="modal">
+        <div class="modal-content slot-modal-content">
+            <div class="slot-shell">
+                <div>
+                    <div class="slot-kicker">Överraskning</div>
+                    <h2 class="slot-title">Slumpa en utmaning!</h2>
+                </div>
+                <p class="slot-copy">Låt mystery-hjulet slumpa din nästa utmaning. Är du inte nöjd slumpar du fram en ny, du har 3 försök på dig. När du är nöjd klickar du på "Välj utmaning". <br>Om du använder alla 3 försök blir den tredje utmaningen automatiskt den ni får.</p>
+                <div id="slotAttempts" class="slot-attempts">3 försök kvar</div>
+
+                <div class="slot-machine-frame">
+                    <div class="slot-reels">
+                        <div class="slot-reel" id="slotReel">
+                            <div class="slot-reel-label">Överraskningsutmaning</div>
+                            <div class="slot-reel-window">
+                                <div class="slot-reel-track" id="slotTrack"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="slotResult" class="slot-result">
+                    <span class="slot-result-label">Resultat</span>
+                    <p id="slotResultText" class="slot-result-text"></p>
+                </div>
+
+                <div class="slot-actions">
+                    <button id="slotSpinBtn" onclick="spinSlotMachine()" class="btn-primary slot-spin-btn">Slumpa utmaning</button>
+                    <button id="slotRevealBtn" onclick="revealSlotChallenge()" class="btn-secondary slot-pick-btn" disabled>Välj utmaning</button>
+                    <button onclick="showBoardFromSlot()" class="btn-secondary">Till spelplanen</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+    <div id="visitorCounter" class="visitor-counter" aria-hidden="true"></div>
+
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <div class="text-[#800020] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">Välkommen</div>
+            <div id="welcomePlayers" class="text-2xl font-black uppercase tracking-[0.18em] mb-6"></div>
+            <div class="text-xl leading-relaxed mb-6 text-gray-100 font-light italic">
+                Välj om ni vill njuta av hela resan från den mjukaste start till det mest intensiva slutet, eller om ni vill kasta er direkt in i hetluften. Oavsett vad ni väljer kommer ni att guidas genom en resa där påklädd närhet byts ut mot beröring, nakenhet och intensitet som ökar för varje steg ni tar.
+            </div>
+            
+            <div class="level-select-grid">
+                <div class="level-option">
+                    <input type="radio" name="startLevel" id="startLevel1" value="0" checked>
+                    <label for="startLevel1">
+                        <span class="level-option-title">Nivå 1 - Mjukstart</span>
+                        <span class="level-option-copy">Standardvalet. En mjuk och sensuell väg in i spelet.</span>
+                    </label>
+                </div>
+                <div class="level-option">
+                    <input type="radio" name="startLevel" id="startLevel2" value="1">
+                    <label for="startLevel2">
+                        <span class="level-option-title">Nivå 2 - Värmen stiger!</span>
+                        <span class="level-option-copy">Hoppa rakt till en mer avklädd och djupare nivå.</span>
+                    </label>
+                </div>
+                <div class="level-option">
+                    <input type="radio" name="startLevel" id="startLevel3" value="2">
+                    <label for="startLevel3">
+                        <span class="level-option-title">Nivå 3 - Nu är det hett!</span>
+                        <span class="level-option-copy">För Er som vill öppna kvällen med total närvaro och tryck.</span>
+                    </label>
+                </div>
+                <div class="level-option">
+                    <input type="radio" name="startLevel" id="startLevel4" value="3">
+                    <label for="startLevel4">
+                        <span class="level-option-title">Nivå 4 - Njutning på er nivå</span>
+                        <span class="level-option-copy">Gå direkt in i den mest intensiva delen av Lust Loops.</span>
+                    </label>
+                </div>
+            </div>
+            <div class="welcome-note">
+                Efter varje runda får ni välja om ni vill spela om samma nivå eller levla upp till nästa.
+            </div>
+            <div class="flex flex-col gap-4">
+                <button onclick="startGame()" class="btn-primary">Starta spelet!</button>
+                <button onclick="goBack()" class="text-gray-400 text-[10px] uppercase tracking-[0.3em] hover:text-white transition-colors">
+                    Tillbaka
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gearModal" class="modal">
+        <div class="modal-content">
+            <div class="text-[#800020] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">Förberedelser</div>
+            <div class="text-2xl font-black uppercase tracking-[0.12em] mb-5">Det här behövs</div>
+            <div class="gear-panel">
+                <ul class="gear-list">
+                    <li>Dildo</li>
+                    <li>Vibrerande leksak</li>
+                    <li>Flogger / Piska / Paddel</li>
+                    <li>Ögonbindel</li>
+                    <li>Massageolja / Glidmedel</li>
+                    <li>Isbitar</li>
+                    <li>Valfri dryck</li>
+                </ul>
+                <p class="gear-copy" style="margin:14px 0 0;">Saknar ni något? Improvisera!</p>
+            </div>
+            <div class="flex flex-col gap-4">
+                <button onclick="closeGearModalAndStartRound()" class="btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="roundEndModal" class="modal">
+        <div class="modal-content">
+            <div class="text-[#800020] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">Båda i mål</div>
+            <div id="roundEndTitle" class="text-2xl font-black uppercase tracking-[0.12em] mb-5">Vad vill ni nu?</div>
+            <div id="roundEndText" class="text-lg leading-relaxed mb-8 text-gray-200 font-light">
+                Ni är klara med rundan. Välj om ni vill spela om samma nivå eller gå vidare till nästa hetta.
+            </div>
+            <div class="round-choice-grid">
+                <button onclick="restartCurrentRound()" class="choice-card">
+                    <span class="choice-title">Samma nivå igen</span>
+                    <span class="choice-copy">Spela om samma runda från start med samma intensitet.</span>
+                </button>
+                <button id="nextRoundBtn" onclick="advanceToNextRound()" class="choice-card">
+                    <span class="choice-title">Hetare nivå</span>
+                    <span id="nextRoundCopy" class="choice-copy">Gå vidare till nästa runda och få vassare utmaningar.</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="levelIntroModal" class="modal">
+        <div class="modal-content">
+            <div class="text-[#800020] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">Ny nivå</div>
+            <div id="levelIntroTitle" class="text-2xl font-black uppercase tracking-[0.12em] mb-5">Nivå 2 av 4</div>
+            <div id="levelIntroText" class="text-xl leading-relaxed mb-8 text-gray-100 font-light italic">
+                En romantisk introduktion med fokus på beröring, smekningar och massage. Lättklätt med underkläderna på som minst. Här bygger vi förväntan...
+            </div>
+            <div class="flex flex-col gap-4">
+                <button onclick="closeLevelIntroModal()" class="btn-primary">Vi fattar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./content.js"></script>
+    <script>
+        const p1 = { id: 1, name: "Spelare 1", gender: "male", pos: -1, color: "blue", side: -18, class: "text-p1" };
+        const p2 = { id: 2, name: "Spelare 2", gender: "female", pos: -1, color: "pink", side: 18, class: "text-p2" };
+        const PLAYER_STORAGE_KEY = "lustLoopsPlayers";
+        const GAME_STATE_STORAGE_KEY = "lustLoopsBoardGameState";
+        const VISITOR_COUNTER_SITE = "";
+        const VISITOR_COUNTER_PATH = "/board-game/index.html";
+        const diceDropAudio = new Audio('./assets/audio/dicedrop.wav');
+        const slotSpinStartAudio = new Audio('./assets/audio/spinwheelstart.wav');
+        const slotSpinStopAudio = new Audio('./assets/audio/spinwheelstop.wav');
+        const timerStopAudio = new Audio('./assets/audio/timerstop.wav');
+        [diceDropAudio, slotSpinStartAudio, slotSpinStopAudio, timerStopAudio].forEach(audio => {
+            audio.preload = 'auto';
+        });
+        
+        let turn = 1, round = 0, isMoving = false, timerInterval = null, timeLeft = 0, timerEndsAt = 0, pendingChallengePlayer = null, pendingDicePlayer = null, timerHasStarted = false, timerExtraUsed = false, firstFinisherId = null, currentChallengeState = null, gearIntroSeen = false, slotMachineState = null, usedContentChoicesByPool = null, wakeLockSentinel = null;
+        const SLOT_MACHINE_MAX_SPINS = 3;
+        const boardGameContent = window.BoardGameContent || {};
+        const maxRound = boardGameContent.maxRound ?? 3;
+        const startAnchor = boardGameContent.startAnchor || { x: 220, y: 40 };
+        const mysteryChallengesByRound = boardGameContent.mysteryChallengesByRound || {};
+        const tilesData = boardGameContent.tilesData || [];
+        const gameContentByIntensity = boardGameContent.gameContentByIntensity || [];
+        const levelIntroContent = boardGameContent.levelIntroContent || {};
+
+        function loadStoredPlayers() {
+            try {
+                const stored = JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY) || "{}");
+                if (stored.player1?.name) p1.name = stored.player1.name.trim() || p1.name;
+                if (stored.player1?.gender) p1.gender = stored.player1.gender;
+                if (stored.player2?.name) p2.name = stored.player2.name.trim() || p2.name;
+                if (stored.player2?.gender) p2.gender = stored.player2.gender;
+            } catch {}
+        }
+
+        function playUiSound(audio, { restart = true } = {}) {
+            if (!audio) return;
+            try {
+                if (restart) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+                audio.play().catch(() => {});
+            } catch {}
+        }
+
+        function stopUiSound(audio) {
+            if (!audio) return;
+            try {
+                audio.pause();
+                audio.currentTime = 0;
+            } catch {}
+        }
+
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+            try {
+                wakeLockSentinel = await navigator.wakeLock.request('screen');
+                wakeLockSentinel.addEventListener('release', () => {
+                    wakeLockSentinel = null;
+                });
+            } catch {}
+        }
+
+        function createEmptyUsedContentChoices() {
+            return {};
+        }
+
+        function getContentPoolKey(roundIndex, label) {
+            const preferences = loadPlayerPreferences();
+            return `${roundIndex}:${label}:anal${preferences.anal ? 1 : 0}:bi${preferences.bi ? 1 : 0}:spanking${preferences.spanking ? 1 : 0}:bdsm${preferences.bdsm ? 1 : 0}`;
+        }
+
+        function loadPlayerPreferences() {
+            const defaults = { anal: true, bi: true, spanking: true, bdsm: true };
+            try {
+                const stored = JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY) || "{}");
+                if (stored.preferences) {
+                    return { ...defaults, ...stored.preferences };
+                }
+                return {
+                    anal: stored.player1?.preferences?.anal !== false && stored.player2?.preferences?.anal !== false,
+                    bi: stored.player1?.preferences?.bi !== false && stored.player2?.preferences?.bi !== false,
+                    spanking: stored.player1?.preferences?.spanking !== false && stored.player2?.preferences?.spanking !== false,
+                    bdsm: stored.player1?.preferences?.bdsm !== false && stored.player2?.preferences?.bdsm !== false
+                };
+            } catch {
+                return defaults;
+            }
+        }
+
+        function isNeutralChallenge(entry) {
+            return !Array.isArray(entry?.tags) || entry.tags.length === 0;
+        }
+
+        function isChallengeAllowedByPreferences(entry, preferences = loadPlayerPreferences()) {
+            const tags = Array.isArray(entry?.tags) ? entry.tags : [];
+            if (!preferences.anal && tags.includes("anal")) return false;
+            if (!preferences.bi && tags.includes("bi")) return false;
+            if (!preferences.spanking && tags.includes("spanking")) return false;
+            if (!preferences.bdsm && tags.includes("bdsm")) return false;
+            return true;
+        }
+
+        function filterContentPoolByPreferences(pool) {
+            const preferences = loadPlayerPreferences();
+            const filteredPool = pool.filter(entry => isChallengeAllowedByPreferences(entry, preferences));
+            if (filteredPool.length > 0) return filteredPool;
+            return pool.filter(isNeutralChallenge);
+        }
+
+        function getIntensityContentPool(roundIndex, label) {
+            const intensityContent = gameContentByIntensity[roundIndex] || gameContentByIntensity[gameContentByIntensity.length - 1];
+            const pool = Array.isArray(intensityContent)
+                ? intensityContent.filter(entry => entry?.label === label && entry?.text)
+                : [];
+
+            return filterContentPoolByPreferences(pool);
+        }
+
+        function pickContentFromPool(roundIndex, label) {
+            if (!usedContentChoicesByPool) {
+                usedContentChoicesByPool = createEmptyUsedContentChoices();
+            }
+
+            const pool = getIntensityContentPool(roundIndex, label);
+            if (pool.length === 0) return "";
+
+            const poolKey = getContentPoolKey(roundIndex, label);
+            const usedIndexes = Array.isArray(usedContentChoicesByPool[poolKey])
+                ? usedContentChoicesByPool[poolKey].filter(index => Number.isInteger(index) && index >= 0 && index < pool.length)
+                : [];
+            const availableIndexes = pool
+                .map((_, index) => index)
+                .filter(index => !usedIndexes.includes(index));
+            const drawIndexes = availableIndexes.length > 0 ? availableIndexes : pool.map((_, index) => index);
+            const selectedIndex = drawIndexes[Math.floor(Math.random() * drawIndexes.length)];
+
+            usedContentChoicesByPool[poolKey] = availableIndexes.length > 0 ? [...usedIndexes, selectedIndex] : [selectedIndex];
+            return pool[selectedIndex]?.text || "";
+        }
+
+        function persistGameState(overlay = null) {
+            const effectiveOverlay = overlay
+                ?? (document.getElementById('challengeModal').classList.contains('active') ? 'challenge'
+                : document.getElementById('slotModal').classList.contains('active') ? 'slot'
+                : document.getElementById('roundEndModal').classList.contains('active') ? 'roundEnd'
+                : document.getElementById('gearModal').classList.contains('active') ? 'gearIntro'
+                : document.getElementById('levelIntroModal').classList.contains('active') ? 'levelIntro'
+                : 'none');
+
+            const state = {
+                turn,
+                round,
+                p1: { name: p1.name, gender: p1.gender, pos: p1.pos },
+                p2: { name: p2.name, gender: p2.gender, pos: p2.pos },
+                pendingChallengePlayerId: pendingChallengePlayer?.id ?? null,
+                pendingDicePlayerId: pendingDicePlayer?.id ?? null,
+                timerHasStarted,
+                timerExtraUsed,
+                firstFinisherId,
+                currentChallengeState,
+                gearIntroSeen,
+                slotMachineState,
+                usedContentChoicesByPool,
+                overlay: effectiveOverlay
+            };
+
+            sessionStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function clearPersistedGameState() {
+            sessionStorage.removeItem(GAME_STATE_STORAGE_KEY);
+        }
+
+        function restoreGameState() {
+            try {
+                const raw = sessionStorage.getItem(GAME_STATE_STORAGE_KEY);
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch {
+                return null;
+            }
+        }
+
+        function getMysteryTileIndex() {
+            return tilesData.findIndex(tile => tile.type === 'mystery');
+        }
+
+        function getSlotDebugConfig() {
+            const params = new URLSearchParams(window.location.search);
+            const wantsSlot = window.location.hash === '#slot' || params.get('slot') === '1';
+            if (!wantsSlot) return null;
+
+            const requestedLevel = Number(params.get('level'));
+            const requestedRound = Number(params.get('round'));
+            const levelBasedRound = Number.isInteger(requestedLevel) ? requestedLevel - 1 : NaN;
+            const roundCandidate = Number.isInteger(levelBasedRound) ? levelBasedRound : requestedRound;
+            const safeRound = Number.isInteger(roundCandidate) ? Math.max(0, Math.min(roundCandidate, maxRound)) : 0;
+            const requestedPlayer = Number(params.get('player'));
+            const playerId = requestedPlayer === 2 ? 2 : 1;
+
+            return {
+                round: safeRound,
+                playerId,
+                mysteryPos: getMysteryTileIndex()
+            };
+        }
+
+        function applyRestoredGameState(state) {
+            if (!state) return false;
+
+            turn = state.turn === 2 ? 2 : 1;
+            round = Number.isInteger(state.round) ? Math.max(0, Math.min(state.round, maxRound)) : 0;
+            p1.name = state.p1?.name || p1.name;
+            p1.gender = state.p1?.gender || p1.gender;
+            p1.pos = Number.isInteger(state.p1?.pos) ? state.p1.pos : -1;
+            p2.name = state.p2?.name || p2.name;
+            p2.gender = state.p2?.gender || p2.gender;
+            p2.pos = Number.isInteger(state.p2?.pos) ? state.p2.pos : -1;
+            pendingChallengePlayer = state.pendingChallengePlayerId === 1 ? p1 : state.pendingChallengePlayerId === 2 ? p2 : null;
+            pendingDicePlayer = state.pendingDicePlayerId === 1 ? p1 : state.pendingDicePlayerId === 2 ? p2 : null;
+            timerHasStarted = Boolean(state.timerHasStarted);
+            timerExtraUsed = Boolean(state.timerExtraUsed);
+            firstFinisherId = state.firstFinisherId === 1 || state.firstFinisherId === 2 ? state.firstFinisherId : null;
+            currentChallengeState = state.currentChallengeState || null;
+            gearIntroSeen = Boolean(state.gearIntroSeen);
+            slotMachineState = state.slotMachineState || null;
+            usedContentChoicesByPool = state.usedContentChoicesByPool || createEmptyUsedContentChoices();
+            return true;
+        }
+
+        function initVisitorCounter() {
+            if (!VISITOR_COUNTER_SITE) return;
+
+            window.goatcounter = {
+                path: () => VISITOR_COUNTER_PATH || window.location.pathname
+            };
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://gc.zgo.at/count.js';
+            script.dataset.goatcounter = `https://${VISITOR_COUNTER_SITE}.goatcounter.com/count`;
+            script.onload = () => {
+                if (!window.goatcounter?.visit_count) return;
+                window.goatcounter.visit_count({
+                    append: '#visitorCounter',
+                    path: VISITOR_COUNTER_PATH || window.location.pathname,
+                    no_branding: true,
+                    attr: {
+                        class: 'visitor-counter-badge',
+                        title: 'Besok totalt for appen'
+                    },
+                    style: `
+                        div {
+                            border: 0;
+                            background: transparent;
+                            color: inherit;
+                            box-shadow: none;
+                            padding: 0;
+                            margin: 0;
+                            font: inherit;
+                        }
+                    `
+                });
+            };
+            document.head.appendChild(script);
+        }
+
+        function init() {
+            usedContentChoicesByPool = createEmptyUsedContentChoices();
+            initVisitorCounter();
+            requestWakeLock();
+            loadStoredPlayers();
+            const board = document.getElementById('board');
+            board.innerHTML = '<div class="board-stage" id="board-stage"></div>';
+            const stage = document.getElementById('board-stage');
+            tilesData.forEach((tile, i) => {
+                const row = document.createElement('div');
+                row.className = 'row';
+                row.style.left = `${(tile.x / 1536) * 100}%`;
+                row.style.top = `${(tile.y / 2752) * 100}%`;
+                row.innerHTML = `
+                    <div class="tile-container">
+                        <div id="tile-${i}" class="tile" aria-label="${tile.label}"></div>
+                        <div class="tile-label">${tile.label}</div>
+                    </div>`;
+                stage.appendChild(row);
+            });
+            createToken(p1); createToken(p2);
+            updateStatus();
+            const slotDebugConfig = getSlotDebugConfig();
+            if (slotDebugConfig) {
+                round = slotDebugConfig.round;
+                p1.pos = slotDebugConfig.playerId === 1 ? slotDebugConfig.mysteryPos : -1;
+                p2.pos = slotDebugConfig.playerId === 2 ? slotDebugConfig.mysteryPos : -1;
+                pendingChallengePlayer = slotDebugConfig.playerId === 2 ? p2 : p1;
+                pendingDicePlayer = null;
+                currentChallengeState = null;
+                slotMachineState = null;
+                setTimeout(() => {
+                    updatePos(p1);
+                    updatePos(p2);
+                    openSlotMachine(pendingChallengePlayer);
+                }, 600);
+                return;
+            }
+            const restoredState = restoreGameState();
+            const hasRestoredGame = applyRestoredGameState(restoredState);
+            setTimeout(() => {
+                updatePos(p1);
+                updatePos(p2);
+                if (!hasRestoredGame) {
+                    openWelcomeModal();
+                    return;
+                }
+
+                updateStatus();
+                if (restoredState.overlay === 'challenge' && pendingChallengePlayer) {
+                    showChallenge(pendingChallengePlayer);
+                    return;
+                }
+                if (restoredState.overlay === 'slot' && pendingChallengePlayer) {
+                    openSlotMachine(pendingChallengePlayer, true);
+                    return;
+                }
+                if (restoredState.overlay === 'roundEnd') {
+                    openRoundEndModal();
+                    return;
+                }
+                if (restoredState.overlay === 'gearIntro') {
+                    openGearModal();
+                    return;
+                }
+                if (restoredState.overlay === 'levelIntro') {
+                    openLevelIntroModal();
+                    return;
+                }
+                if (pendingChallengePlayer) {
+                    showChallengeTrigger(pendingChallengePlayer);
+                    return;
+                }
+                if (pendingDicePlayer) {
+                    showTurnTrigger(pendingDicePlayer);
+                    return;
+                }
+                openWelcomeModal();
+            }, 600);
+        }
+
+        function createToken(p) {
+            const t = document.createElement('div');
+            t.id = `token-${p.id}`;
+            t.className = `player-token p-${p.color}`;
+            document.body.appendChild(t);
+        }
+
+        function hideChallengeTrigger() {
+            document.getElementById('challengeTrigger').classList.add('hidden');
+        }
+
+        function hideTurnTrigger() {
+            document.getElementById('turnTriggerBoard').classList.add('hidden');
+        }
+
+        function showTurnTrigger(player) {
+            const token = document.getElementById(`token-${player.id}`);
+            const btn = document.getElementById('turnTriggerBoard');
+            const rect = token.getBoundingClientRect();
+            const accent = player.id === 1 ? '#00e5ff' : '#ff007f';
+            const accentSoft = player.id === 1 ? 'rgba(0,229,255,0.30)' : 'rgba(255,0,127,0.30)';
+            const accentGlow = player.id === 1 ? 'rgba(0,229,255,0.42)' : 'rgba(255,0,127,0.42)';
+            btn.innerHTML = `<span class="trigger-player" style="color:${accent}">${player.name}</span><span class="trigger-name" style="color:transparent">.</span><span class="trigger-core"><span class="trigger-action">Rulla tärning</span></span>`;
+            btn.style.setProperty('--trigger-accent', accentSoft);
+            btn.style.setProperty('--trigger-glow', accentGlow);
+            positionFloatingButton(btn, rect);
+            btn.classList.remove('hidden');
+        }
+
+        function showChallengeTrigger(player) {
+            const token = document.getElementById(`token-${player.id}`);
+            const btn = document.getElementById('challengeTrigger');
+            const rect = token.getBoundingClientRect();
+            const tileLabel = tilesData[player.pos]?.label || 'Utmaning';
+            const accent = player.id === 1 ? '#00e5ff' : '#ff007f';
+            const accentSoft = player.id === 1 ? 'rgba(0,229,255,0.30)' : 'rgba(255,0,127,0.30)';
+            const accentGlow = player.id === 1 ? 'rgba(0,229,255,0.42)' : 'rgba(255,0,127,0.42)';
+            btn.innerHTML = `<span class="trigger-player" style="color:${accent}">${player.name}</span><span class="trigger-name" style="color:${accent}">${tileLabel}</span><span class="trigger-core"><span class="trigger-action">Visa utmaning</span></span>`;
+            btn.style.setProperty('--trigger-accent', accentSoft);
+            btn.style.setProperty('--trigger-glow', accentGlow);
+            positionFloatingButton(btn, rect);
+            btn.classList.remove('hidden');
+        }
+
+        function positionFloatingButton(btn, rect) {
+            const headerBottom = document.getElementById('boardHeader')?.getBoundingClientRect().bottom || 0;
+            const centerX = window.scrollX + (window.innerWidth / 2);
+            const minTop = window.scrollY + headerBottom + 96;
+            const preferredTop = window.scrollY + (window.innerHeight * 0.52);
+            const top = Math.max(preferredTop, minTop);
+
+            btn.style.transform = 'translate(-50%, -50%)';
+            btn.style.left = `${centerX}px`;
+            btn.style.top = `${top}px`;
+        }
+
+        function updatePos(player) {
+            const token = document.getElementById(`token-${player.id}`);
+            const tile = player.pos >= 0 ? document.getElementById(`tile-${player.pos}`) : null;
+            const stage = document.getElementById('board-stage');
+            const stageRect = stage.getBoundingClientRect();
+            const tokenHalf = token.offsetWidth ? token.offsetWidth / 2 : 11;
+            if (!tile) {
+                token.style.left = `${stageRect.left + window.scrollX + (stageRect.width * startAnchor.x / 1536) - tokenHalf + player.side}px`;
+                token.style.top = `${stageRect.top + window.scrollY + (stageRect.height * startAnchor.y / 2752) - tokenHalf}px`;
+                return;
+            }
+            const rect = tile.getBoundingClientRect();
+            token.style.left = `${rect.left + window.scrollX + (rect.width/2) - tokenHalf + player.side}px`;
+            token.style.top = `${rect.top + window.scrollY + (rect.height/2) - tokenHalf}px`;
+            if (pendingChallengePlayer && pendingChallengePlayer.id === player.id) showChallengeTrigger(player);
+            if (pendingDicePlayer && pendingDicePlayer.id === player.id) showTurnTrigger(player);
+        }
+
+        function setDiceFace(el, value) {
+            el.dataset.face = String(value);
+        }
+
+        function getDiceDisplays() {
+            return Array.from(document.querySelectorAll('.dice-display'));
+        }
+
+        function getDiceResults() {
+            return Array.from(document.querySelectorAll('.dice-result'));
+        }
+
+        function setDiceAccent(el) {
+            el.style.setProperty('--dice-accent', turn === 1 ? 'rgba(0,229,255,0.28)' : 'rgba(255,0,127,0.28)');
+        }
+
+        function positionBoardDiceResult() {
+            const badge = document.getElementById('boardDiceResult');
+            const stage = document.getElementById('board-stage');
+            if (!badge || !stage) return;
+
+            const stageRect = stage.getBoundingClientRect();
+            const headerBottom = document.getElementById('boardHeader')?.getBoundingClientRect().bottom || 0;
+            const size = badge.offsetWidth || 64;
+            const left = Math.min(window.innerWidth - size - 12, Math.max(12, stageRect.right - size - 12));
+            const top = Math.min(window.innerHeight - size - 14, Math.max(headerBottom + 12, stageRect.top + 14));
+
+            badge.style.left = `${left}px`;
+            badge.style.top = `${top}px`;
+        }
+
+        function showBoardDiceResult(value, player, sourceEl = null) {
+            const badge = document.getElementById('boardDiceResult');
+            const face = document.getElementById('boardDiceFace');
+            if (!badge || !face) return;
+
+            setDiceFace(face, value);
+            face.style.setProperty('--dice-accent', player.id === 1 ? 'rgba(0,229,255,0.28)' : 'rgba(255,0,127,0.28)');
+            badge.classList.remove('hidden');
+            positionBoardDiceResult();
+
+            const targetRect = badge.getBoundingClientRect();
+            if (sourceEl?.getBoundingClientRect && badge.animate) {
+                const sourceRect = sourceEl.getBoundingClientRect();
+                const scale = sourceRect.width && targetRect.width ? sourceRect.width / targetRect.width : 2.2;
+                const translateX = sourceRect.left + (sourceRect.width / 2) - (targetRect.left + (targetRect.width / 2));
+                const translateY = sourceRect.top + (sourceRect.height / 2) - (targetRect.top + (targetRect.height / 2));
+
+                badge.animate([
+                    { opacity: 0.98, transform: `translate(${translateX}px, ${translateY}px) scale(${scale})` },
+                    { opacity: 1, transform: 'translate(0, 0) scale(1)' }
+                ], {
+                    duration: 420,
+                    easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+                });
+            }
+
+            requestAnimationFrame(() => badge.classList.add('active'));
+        }
+
+        function hideBoardDiceResult() {
+            const badge = document.getElementById('boardDiceResult');
+            if (!badge) return;
+            badge.classList.remove('active');
+            setTimeout(() => {
+                if (!badge.classList.contains('active')) {
+                    badge.classList.add('hidden');
+                }
+            }, 240);
+        }
+
+        function isPlayerAtFinish(player) {
+            return player.pos === tilesData.length - 1;
+        }
+
+        function getOtherPlayer(player) {
+            return player.id === 1 ? p2 : p1;
+        }
+
+        function getRemainingPlayer() {
+            if (!isPlayerAtFinish(p1)) return p1;
+            if (!isPlayerAtFinish(p2)) return p2;
+            return null;
+        }
+
+        function resetBoardForRound() {
+            hideChallengeTrigger();
+            hideTurnTrigger();
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerEndsAt = 0;
+            timeLeft = 0;
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            pendingChallengePlayer = null;
+            pendingDicePlayer = null;
+            isMoving = false;
+            firstFinisherId = null;
+            slotMachineState = null;
+            usedContentChoicesByPool = createEmptyUsedContentChoices();
+            p1.pos = -1;
+            p2.pos = -1;
+            updatePos(p1);
+            updatePos(p2);
+            persistGameState('none');
+        }
+
+        function beginRound(startingPlayerId = 1) {
+            turn = startingPlayerId;
+            pendingDicePlayer = turn === 1 ? p1 : p2;
+            updateStatus();
+            if (levelIntroContent[round]) {
+                openLevelIntroModal();
+                return;
+            }
+            persistGameState('none');
+            setTimeout(() => showTurnTrigger(pendingDicePlayer), 300);
+        }
+
+        function openLevelIntroModal() {
+            const intro = levelIntroContent[round];
+            if (!intro) {
+                persistGameState('none');
+                setTimeout(() => showTurnTrigger(pendingDicePlayer), 300);
+                return;
+            }
+            document.getElementById('levelIntroTitle').innerText = intro.title;
+            document.getElementById('levelIntroText').innerText = intro.text;
+            document.getElementById('levelIntroModal').classList.add('active');
+            persistGameState('levelIntro');
+        }
+
+        function closeLevelIntroModal() {
+            document.getElementById('levelIntroModal').classList.remove('active');
+            persistGameState('none');
+            if (pendingDicePlayer) {
+                setTimeout(() => showTurnTrigger(pendingDicePlayer), 220);
+            }
+        }
+
+        function openRoundEndModal() {
+            const nextRoundBtn = document.getElementById('nextRoundBtn');
+            const nextRoundCopy = document.getElementById('nextRoundCopy');
+            const hasHotterRound = round < maxRound;
+
+            nextRoundBtn.disabled = !hasHotterRound;
+            nextRoundCopy.innerText = hasHotterRound
+                ? "Gå vidare till nästa runda och få vassare utmaningar."
+                : "Ni är redan på högsta nivån, så härifrån blir det omspel på samma hetta.";
+            document.getElementById('roundEndModal').classList.add('active');
+            persistGameState('roundEnd');
+        }
+
+        function openChallengeContent(activeP, category, text) {
+            const timerPanel = document.querySelector('.timer-panel');
+            const timerBtn = document.getElementById('timerBtn');
+            const boardViewBtn = document.getElementById('boardViewBtn');
+            const doneBtn = document.getElementById('doneBtn');
+            const targetP = turn === 1 ? p2 : p1;
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerEndsAt = 0;
+            timeLeft = 0;
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            applyChallengeAccent(activeP);
+            document.getElementById('challengeLevel').innerText = `Nivå ${Math.min(round + 1, maxRound + 1)} av ${maxRound + 1}`;
+            document.getElementById('timer-display').innerText = "--:--";
+            document.getElementById('timer-display').classList.add('timer-inactive');
+            setTimerButtonState({ text: "Starta njutningen", disabled: false });
+            document.querySelector('.timer-panel').classList.remove('timer-panel-active');
+            timerPanel.style.display = '';
+            timerBtn.style.display = '';
+            boardViewBtn.style.display = '';
+            doneBtn.style.width = '';
+            doneBtn.innerText = "Vi är klara";
+            document.getElementById('modalLead').innerHTML = `<span class="challenge-lead-name" style="--player-accent:${activeP.id === 1 ? '#00e5ff' : '#ff007f'};">${activeP.name}</span><span class="challenge-lead-separator">-</span><span class="challenge-lead-label">${category}</span>`;
+            applyChallengeTextSizing(text);
+            document.getElementById('modalText').innerHTML = decorateChallengeText(text, activeP, targetP);
+            currentChallengeState = { playerId: activeP.id, pos: activeP.pos, category, text };
+            document.getElementById('challengeModal').classList.add('active');
+            persistGameState('challenge');
+        }
+
+        function restartCurrentRound() {
+            document.getElementById('roundEndModal').classList.remove('active');
+            resetBoardForRound();
+            beginRound(1);
+        }
+
+        function advanceToNextRound() {
+            if (round < maxRound) round++;
+            document.getElementById('roundEndModal').classList.remove('active');
+            resetBoardForRound();
+            beginRound(1);
+        }
+
+        function escapeRegExp(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function getChallengePlayerMarkup(player, suffix = '') {
+            return `<span class="challenge-player-name" style="--player-accent:${player.id === 1 ? '#00e5ff' : '#ff007f'};">${player.name}${suffix}</span>`;
+        }
+
+        function decorateChallengeText(text, actor, target) {
+            const actorPossessiveMarkup = getChallengePlayerMarkup(actor, 's');
+            const targetPossessiveMarkup = getChallengePlayerMarkup(target, 's');
+            const actorMarkup = getChallengePlayerMarkup(actor);
+            const targetMarkup = getChallengePlayerMarkup(target);
+
+            return text
+                .replace(/\$ACTOR_POSSESSIVE/g, actorPossessiveMarkup)
+                .replace(/\$TARGET_POSSESSIVE/g, targetPossessiveMarkup)
+                .replace(/\$ACTORs/g, actorPossessiveMarkup)
+                .replace(/\$TARGETs/g, targetPossessiveMarkup)
+                .replace(new RegExp(`${escapeRegExp(actor.name)}s`, 'g'), actorPossessiveMarkup)
+                .replace(new RegExp(`${escapeRegExp(target.name)}s`, 'g'), targetPossessiveMarkup)
+                .replace(/\$ACTOR/g, actorMarkup)
+                .replace(/\$TARGET/g, targetMarkup)
+                .replace(new RegExp(escapeRegExp(actor.name), 'g'), actorMarkup)
+                .replace(new RegExp(escapeRegExp(target.name), 'g'), targetMarkup);
+        }
+
+        function applyChallengeTextSizing(text) {
+            const modalText = document.getElementById('modalText');
+            const length = text.replace(/\s+/g, ' ').trim().length;
+            modalText.classList.remove('size-medium', 'size-small', 'size-xsmall');
+
+            if (length >= 210) {
+                modalText.classList.add('size-xsmall');
+                return;
+            }
+            if (length >= 160) {
+                modalText.classList.add('size-small');
+                return;
+            }
+            if (length >= 105) {
+                modalText.classList.add('size-medium');
+            }
+        }
+
+        function normalizeMysteryChallenge(entry, roundIndex, challengeIndex) {
+            if (typeof entry === 'string') {
+                const fallbackLabel = `${roundIndex + 1}${String.fromCharCode(65 + challengeIndex)}`;
+                return { label: fallbackLabel, text: entry };
+            }
+            return {
+                label: entry?.label || `${roundIndex + 1}${String.fromCharCode(65 + challengeIndex)}`,
+                text: entry?.text || entry?.label || '',
+                tags: Array.isArray(entry?.tags) ? entry.tags : []
+            };
+        }
+
+        function getMysteryChallengePool(roundIndex) {
+            const basePool = mysteryChallengesByRound[roundIndex] || mysteryChallengesByRound[0] || [];
+            return filterContentPoolByPreferences(basePool);
+        }
+
+        function renderMysteryReel(challenges, selectedIndex) {
+            const track = document.getElementById('slotTrack');
+            const total = challenges.length;
+            if (total === 0) {
+                track.innerHTML = `
+                    <div class="slot-reel-item">Överraskning</div>
+                    <div class="slot-reel-item active">Ingen träff</div>
+                    <div class="slot-reel-item">Överraskning</div>
+                `;
+                return;
+            }
+            selectedIndex = Math.max(0, Math.min(selectedIndex, total - 1));
+            const previousIndex = (selectedIndex - 1 + total) % total;
+            const nextIndex = (selectedIndex + 1) % total;
+            const previous = normalizeMysteryChallenge(challenges[previousIndex], round, previousIndex);
+            const current = normalizeMysteryChallenge(challenges[selectedIndex], round, selectedIndex);
+            const next = normalizeMysteryChallenge(challenges[nextIndex], round, nextIndex);
+            track.innerHTML = `
+                <div class="slot-reel-item">${previous.label}</div>
+                <div class="slot-reel-item active">${current.label}</div>
+                <div class="slot-reel-item">${next.label}</div>
+            `;
+        }
+
+        function renderSlotResultText(text) {
+            const actor = pendingChallengePlayer || (turn === 1 ? p1 : p2);
+            const target = actor.id === 1 ? p2 : p1;
+            document.getElementById('slotResultText').innerHTML = decorateChallengeText(text, actor, target);
+            document.getElementById('slotResult').classList.add('active');
+        }
+
+        function getAvailableMysteryIndexes(challenges, usedIndexes = []) {
+            return challenges.map((_, index) => index).filter(index => !usedIndexes.includes(index));
+        }
+
+        function updateSlotAttemptsText(attemptsUsed, attemptsMax, canSpin) {
+            const attemptsEl = document.getElementById('slotAttempts');
+            const attemptsLeft = Math.max(0, attemptsMax - attemptsUsed);
+            attemptsEl.innerText = canSpin
+                ? `${attemptsLeft} försök kvar`
+                : `Alla ${attemptsMax} försök använda`;
+        }
+
+        function setSlotButtonState({ spinning, ready, attemptsUsed = 0, attemptsMax = SLOT_MACHINE_MAX_SPINS, canSpin = true }) {
+            const spinBtn = document.getElementById('slotSpinBtn');
+            const revealBtn = document.getElementById('slotRevealBtn');
+            spinBtn.disabled = spinning || !canSpin;
+            spinBtn.innerText = spinning ? "Slumpar..." : canSpin ? "Slumpa utmaning" : "Inga försök kvar";
+            revealBtn.disabled = !ready;
+            revealBtn.classList.toggle('ready', ready);
+            updateSlotAttemptsText(attemptsUsed, attemptsMax, canSpin);
+        }
+
+        function randomChoice(options) {
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        function openSlotMachine(activeP, restore = false) {
+            const targetP = activeP.id === 1 ? p2 : p1;
+            const challenges = getMysteryChallengePool(round);
+            const matchingSavedState = slotMachineState && slotMachineState.playerId === activeP.id && slotMachineState.pos === activeP.pos && slotMachineState.round === round;
+            const hasSavedResult = matchingSavedState && slotMachineState.challengeText;
+            const selectedIndex = hasSavedResult
+                ? Math.max(0, Math.min(slotMachineState.challengeIndex, Math.max(0, challenges.length - 1)))
+                : 0;
+            const usedChallengeIndexes = matchingSavedState && Array.isArray(slotMachineState.usedChallengeIndexes)
+                ? slotMachineState.usedChallengeIndexes
+                    .filter(index => Number.isInteger(index) && index >= 0 && index < challenges.length)
+                : [];
+            const canSpin = usedChallengeIndexes.length < SLOT_MACHINE_MAX_SPINS
+                && getAvailableMysteryIndexes(challenges, usedChallengeIndexes).length > 0;
+
+            document.getElementById('slotReel').classList.remove('is-spinning');
+            renderMysteryReel(challenges, selectedIndex);
+            document.getElementById('slotResult').classList.remove('active');
+
+            slotMachineState = {
+                playerId: activeP.id,
+                pos: activeP.pos,
+                round,
+                targetId: targetP.id,
+                challengeLabel: hasSavedResult ? slotMachineState.challengeLabel : null,
+                challengeText: hasSavedResult ? slotMachineState.challengeText : null,
+                challengeIndex: hasSavedResult ? slotMachineState.challengeIndex : null,
+                usedChallengeIndexes
+            };
+
+            if (hasSavedResult) {
+                renderSlotResultText(slotMachineState.challengeText);
+                setSlotButtonState({ spinning: false, ready: true, attemptsUsed: usedChallengeIndexes.length, canSpin });
+            } else {
+                setSlotButtonState({ spinning: false, ready: false, attemptsUsed: usedChallengeIndexes.length, canSpin });
+            }
+
+            document.getElementById('slotModal').classList.add('active');
+            persistGameState('slot');
+        }
+
+        function spinSlotMachine() {
+            if (!pendingChallengePlayer || !slotMachineState) return;
+            requestWakeLock();
+            const challenges = getMysteryChallengePool(round);
+            const reelEl = document.getElementById('slotReel');
+            const usedChallengeIndexes = Array.isArray(slotMachineState.usedChallengeIndexes) ? slotMachineState.usedChallengeIndexes : [];
+            const availableIndexes = getAvailableMysteryIndexes(challenges, usedChallengeIndexes);
+
+            if (usedChallengeIndexes.length >= SLOT_MACHINE_MAX_SPINS || availableIndexes.length === 0) {
+                setSlotButtonState({ spinning: false, ready: Boolean(slotMachineState.challengeText), attemptsUsed: usedChallengeIndexes.length, canSpin: false });
+                return;
+            }
+
+            document.getElementById('slotResult').classList.remove('active');
+            setSlotButtonState({ spinning: true, ready: false, attemptsUsed: usedChallengeIndexes.length, canSpin: true });
+            playUiSound(slotSpinStartAudio);
+
+            reelEl.classList.add('is-spinning');
+            const intervalId = setInterval(() => {
+                const previewIndex = randomChoice(availableIndexes);
+                renderMysteryReel(challenges, previewIndex);
+            }, 90);
+            reelEl.dataset.intervalId = String(intervalId);
+
+            setTimeout(() => {
+                clearInterval(Number(reelEl.dataset.intervalId));
+                reelEl.classList.remove('is-spinning');
+                playUiSound(slotSpinStopAudio);
+                const selectedIndex = randomChoice(availableIndexes);
+                const selectedChallenge = normalizeMysteryChallenge(challenges[selectedIndex], round, selectedIndex);
+                const nextUsedChallengeIndexes = [...usedChallengeIndexes, selectedIndex];
+                const canSpinAgain = nextUsedChallengeIndexes.length < SLOT_MACHINE_MAX_SPINS
+                    && getAvailableMysteryIndexes(challenges, nextUsedChallengeIndexes).length > 0;
+                slotMachineState.challengeIndex = selectedIndex;
+                slotMachineState.challengeLabel = selectedChallenge.label;
+                slotMachineState.challengeText = selectedChallenge.text;
+                slotMachineState.usedChallengeIndexes = nextUsedChallengeIndexes;
+                renderMysteryReel(challenges, selectedIndex);
+                renderSlotResultText(slotMachineState.challengeText);
+                setSlotButtonState({ spinning: false, ready: true, attemptsUsed: nextUsedChallengeIndexes.length, canSpin: canSpinAgain });
+                persistGameState('slot');
+            }, 2000);
+        }
+
+        function revealSlotChallenge() {
+            if (!pendingChallengePlayer || !slotMachineState?.challengeText) return;
+            const text = slotMachineState.challengeText;
+            document.getElementById('slotModal').classList.remove('active');
+            openChallengeContent(pendingChallengePlayer, slotMachineState.challengeLabel || "Överraskning", text);
+        }
+
+        function showBoardFromSlot() {
+            if (!pendingChallengePlayer) return;
+            document.getElementById('slotModal').classList.remove('active');
+            persistGameState('none');
+            setTimeout(() => showChallengeTrigger(pendingChallengePlayer), 180);
+        }
+
+        function applyChallengeAccent(player) {
+            const accent = player.id === 1 ? "#00e5ff" : "#ff007f";
+            const accentSoft = player.id === 1 ? "rgba(0,229,255,0.38)" : "rgba(255,0,127,0.38)";
+            const accentGlow = player.id === 1 ? "rgba(0,229,255,0.34)" : "rgba(255,0,127,0.34)";
+            const timerDisplay = document.getElementById('timer-display');
+            const timerPanel = document.querySelector('.timer-panel');
+            const doneBtn = document.getElementById('doneBtn');
+            const challengeCard = document.querySelector('.challenge-modal-content');
+
+            timerDisplay.style.color = accent;
+            timerDisplay.style.textShadow = `0 0 18px ${accentGlow}`;
+            timerPanel.style.setProperty('--timer-accent-soft', accentSoft);
+            doneBtn.style.borderColor = accentSoft;
+            challengeCard.style.setProperty('--challenge-accent', accentSoft);
+            challengeCard.style.setProperty('--challenge-accent-glow', accentGlow);
+        }
+
+        function setTimerButtonState({ text, disabled }) {
+            const timerBtn = document.getElementById('timerBtn');
+            timerBtn.innerText = text;
+            timerBtn.disabled = disabled;
+        }
+
+        function openDiceModal() {
+            if (isMoving) return;
+            hideBoardDiceResult();
+            const activeP = turn === 1 ? p1 : p2;
+            const nameEl = document.getElementById('dice-player-name');
+            nameEl.innerText = activeP.name;
+            nameEl.className = `text-2xl font-black uppercase tracking-widest mb-6 ${activeP.class}`;
+            getDiceDisplays().forEach(diceDisplay => {
+                diceDisplay.classList.remove('hidden', 'dice-rolling', 'result-win');
+                diceDisplay.style.transform = 'none';
+                setDiceAccent(diceDisplay);
+                setDiceFace(diceDisplay, 1);
+            });
+            getDiceResults().forEach(diceResult => {
+                diceResult.classList.add('hidden');
+                diceResult.style.transform = 'none';
+                diceResult.classList.remove('result-win');
+                setDiceAccent(diceResult);
+                setDiceFace(diceResult, 1);
+            });
+            document.getElementById('diceModal').classList.add('active');
+            setTimeout(executeRoll, 450);
+        }
+
+        function openWelcomeModal() {
+            document.getElementById('welcomePlayers').innerHTML = `<span class="${p1.class}">${p1.name}</span> & <span class="${p2.class}">${p2.name}</span>`;
+            document.getElementById('welcomeModal').classList.add('active');
+        }
+
+        function openGearModal() {
+            document.getElementById('gearModal').classList.add('active');
+            persistGameState('gearIntro');
+        }
+
+        function closeGearModalAndStartRound() {
+            gearIntroSeen = true;
+            document.getElementById('gearModal').classList.remove('active');
+            beginRound(1);
+        }
+
+        function getSelectedStartRound() {
+            const selected = document.querySelector('input[name="startLevel"]:checked');
+            return selected ? Number(selected.value) || 0 : 0;
+        }
+
+        function startGame() {
+            requestWakeLock();
+            document.getElementById('welcomeModal').classList.remove('active');
+            round = Math.max(0, Math.min(getSelectedStartRound(), maxRound));
+            resetBoardForRound();
+            gearIntroSeen = false;
+            openGearModal();
+        }
+
+        function goBack() {
+            clearPersistedGameState();
+            window.location.href = '../index.html?fade=1';
+        }
+
+        function openDiceFromBoard() {
+            if (!pendingDicePlayer || isMoving || pendingChallengePlayer) return;
+            requestWakeLock();
+            hideTurnTrigger();
+            playUiSound(diceDropAudio);
+            openDiceModal();
+        }
+
+        async function executeRoll() {
+            hideChallengeTrigger();
+            hideTurnTrigger();
+            pendingChallengePlayer = null;
+            pendingDicePlayer = null;
+            const diceDisplays = getDiceDisplays();
+            const diceResults = getDiceResults();
+            diceDisplays.forEach(diceDisplay => diceDisplay.classList.remove('hidden'));
+            diceResults.forEach(diceResult => diceResult.classList.add('hidden'));
+            void document.getElementById('diceCard').offsetWidth;
+            diceDisplays.forEach(diceDisplay => diceDisplay.classList.add('dice-rolling'));
+            for(let i=0; i<12; i++) {
+                diceDisplays.forEach(diceDisplay => setDiceFace(diceDisplay, Math.floor(Math.random()*6)+1));
+                await new Promise(r => setTimeout(r, 110));
+            }
+            const active = turn === 1 ? p1 : p2;
+            const maxPos = tilesData.length - 1;
+            const rawVal = Math.floor(Math.random()*6)+1;
+            const val = Math.min(rawVal, maxPos - active.pos);
+            diceDisplays.forEach(diceDisplay => diceDisplay.classList.remove('dice-rolling'));
+            stopUiSound(diceDropAudio);
+            diceDisplays.forEach(diceDisplay => {
+                diceDisplay.classList.add('hidden');
+                diceDisplay.style.transform = 'none';
+            });
+            diceResults.forEach(diceResult => {
+                setDiceFace(diceResult, val);
+                setDiceAccent(diceResult);
+                diceResult.classList.add('result-win');
+                diceResult.classList.remove('hidden');
+            });
+            await new Promise(r => setTimeout(r, 1050));
+            showBoardDiceResult(val, active, diceResults[0]);
+            await new Promise(r => setTimeout(r, 300));
+            document.getElementById('diceModal').classList.remove('active');
+            setTimeout(() => { isMoving = true; move(val); }, 260);
+        }
+
+        async function move(steps) {
+            const active = turn === 1 ? p1 : p2;
+            const target = Math.min(active.pos + steps, tilesData.length - 1);
+            for(let i = active.pos + 1; i <= target; i++) {
+                active.pos = i;
+                updatePos(active);
+                document.getElementById(`token-${active.id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                await new Promise(r => setTimeout(r, 550));
+            }
+            isMoving = false;
+            pendingChallengePlayer = active;
+            updateStatus();
+            persistGameState('none');
+            setTimeout(() => {
+                showChallengeTrigger(active);
+            }, 300);
+        }
+
+        function openChallengeFromBoard() {
+            if (!pendingChallengePlayer || isMoving) return;
+            hideBoardDiceResult();
+            hideChallengeTrigger();
+            if (currentChallengeState && currentChallengeState.playerId === pendingChallengePlayer.id && currentChallengeState.pos === pendingChallengePlayer.pos) {
+                document.getElementById('challengeModal').classList.add('active');
+                persistGameState('challenge');
+                return;
+            }
+            showChallenge(pendingChallengePlayer);
+        }
+
+        function showBoardFromChallenge() {
+            if (!pendingChallengePlayer) return;
+            document.getElementById('challengeModal').classList.remove('active');
+            persistGameState('none');
+            setTimeout(() => showChallengeTrigger(pendingChallengePlayer), 180);
+        }
+
+        function showChallenge(activeP) {
+            const tile = tilesData[activeP.pos];
+            const type = tile.type;
+            let cat = "", key = "";
+            const targetP = turn === 1 ? p2 : p1;
+            const timerPanel = document.querySelector('.timer-panel');
+            const timerBtn = document.getElementById('timerBtn');
+            const boardViewBtn = document.getElementById('boardViewBtn');
+            const doneBtn = document.getElementById('doneBtn');
+            document.getElementById('challengeLevel').innerText = `Nivå ${Math.min(round + 1, maxRound + 1)} av ${maxRound + 1}`;
+
+            if (type === "finish" && isPlayerAtFinish(getOtherPlayer(activeP))) {
+                pendingChallengePlayer = null;
+                currentChallengeState = null;
+                persistGameState('roundEnd');
+                openRoundEndModal();
+                return;
+            }
+
+            if (
+                currentChallengeState
+                && currentChallengeState.playerId === activeP.id
+                && currentChallengeState.pos === activeP.pos
+                && currentChallengeState.text
+            ) {
+                openChallengeContent(activeP, currentChallengeState.category || "Överraskning", currentChallengeState.text);
+                return;
+            }
+
+            if (type === "finish") {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerEndsAt = 0;
+                timeLeft = 0;
+                timerHasStarted = false;
+                timerExtraUsed = false;
+                applyChallengeAccent(activeP);
+                document.getElementById('timer-display').innerText = "--:--";
+                document.getElementById('timer-display').classList.add('timer-inactive');
+                setTimerButtonState({ text: "Starta njutningen", disabled: false });
+                document.querySelector('.timer-panel').classList.remove('timer-panel-active');
+                timerPanel.style.display = '';
+                timerBtn.style.display = '';
+                boardViewBtn.style.display = '';
+                doneBtn.style.width = '';
+                doneBtn.innerText = "Vi är klara";
+                const finishText = `Grattis - Du är först i mål! Luta dig tillbaka och njut av att ${targetP.name} kämpar sig fram till dig genom resterande utmaningar.`;
+                document.getElementById('modalLead').innerHTML = `<span class="challenge-lead-name" style="--player-accent:${activeP.id === 1 ? '#00e5ff' : '#ff007f'};">${activeP.name}</span><span class="challenge-lead-separator">-</span><span class="challenge-lead-label">Mål</span>`;
+                applyChallengeTextSizing(finishText);
+                document.getElementById('modalText').innerHTML = decorateChallengeText(finishText, activeP, targetP);
+                timerPanel.style.display = 'none';
+                timerBtn.style.display = 'none';
+                boardViewBtn.style.display = 'none';
+                doneBtn.style.width = '100%';
+                doneBtn.innerText = "Njut...";
+            } else {
+                if (type === "mystery") {
+                    openSlotMachine(activeP);
+                    return;
+                }
+                const resolvedType = type;
+                if (resolvedType === "hands") { cat = type === "mystery" ? "Överraskning: Händer" : "Händer"; key = activeP.gender === "male" ? "hands_male" : "hands_female"; }
+                if (resolvedType === "mouth") { cat = type === "mystery" ? "Överraskning: Mun" : "Mun"; key = "mouth"; }
+                if (resolvedType === "breasts") { cat = type === "mystery" ? "Överraskning: Bröst" : "Bröst"; key = activeP.gender === "male" ? "breasts_male" : "breasts_female"; }
+                if (resolvedType === "butt") { cat = type === "mystery" ? "Överraskning: Rumpa" : "Rumpa"; key = "butt"; }
+                let text = pickContentFromPool(round, key) || "Ingen utmaning hittades för den här kategorin.";
+                text = text.split("$ACTOR").join(activeP.name).split("$TARGET").join(targetP.name);
+                openChallengeContent(activeP, cat, text);
+                return;
+            }
+            currentChallengeState = { playerId: activeP.id, pos: activeP.pos };
+            document.getElementById('challengeModal').classList.add('active');
+            persistGameState('challenge');
+        }
+
+        function randomizeTimer() {
+            requestWakeLock();
+            if (!timerHasStarted) {
+                timerHasStarted = true;
+            } else {
+                if (timeLeft > 0 || timerExtraUsed) return;
+                timerExtraUsed = true;
+            }
+
+            const newSeconds = Math.floor(Math.random() * (300 - 120 + 1)) + 120;
+            document.getElementById('timer-display').classList.remove('timer-inactive');
+            document.querySelector('.timer-panel').classList.add('timer-panel-active');
+            setTimerButtonState({ text: "Vi vill fortsätta lite till...", disabled: true });
+            startTimer(newSeconds);
+        }
+
+        function startTestTimer() {
+            requestWakeLock();
+            timerHasStarted = true;
+            document.getElementById('timer-display').classList.remove('timer-inactive');
+            document.querySelector('.timer-panel').classList.add('timer-panel-active');
+            setTimerButtonState({ text: "Vi vill fortsätta lite till...", disabled: true });
+            startTimer(3);
+        }
+
+        function finishTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerEndsAt = 0;
+            timeLeft = 0;
+            updateTimerDisplay();
+            if (!timerExtraUsed) {
+                setTimerButtonState({ text: "Vi vill fortsätta lite till...", disabled: false });
+            }
+            playUiSound(timerStopAudio);
+            if (navigator.vibrate) {
+                navigator.vibrate([220, 120, 220]);
+            }
+        }
+
+        function syncTimerState() {
+            if (!timerEndsAt) return;
+            const remainingSeconds = Math.max(0, Math.ceil((timerEndsAt - Date.now()) / 1000));
+            timeLeft = remainingSeconds;
+            updateTimerDisplay();
+            if (remainingSeconds <= 0) {
+                finishTimer();
+            }
+        }
+
+        function startTimer(seconds) {
+            clearInterval(timerInterval);
+            timerEndsAt = Date.now() + (seconds * 1000);
+            timeLeft = seconds;
+            updateTimerDisplay();
+            timerInterval = setInterval(syncTimerState, 250);
+        }
+
+        function updateTimerDisplay() {
+            const min = Math.floor(timeLeft / 60);
+            const sec = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function closeModal() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerEndsAt = 0;
+            timerHasStarted = false;
+            timerExtraUsed = false;
+            const closingPlayer = pendingChallengePlayer;
+            slotMachineState = null;
+            currentChallengeState = null;
+            document.getElementById('challengeModal').classList.remove('active');
+            hideChallengeTrigger();
+            pendingChallengePlayer = null;
+            if (!closingPlayer) return;
+
+            if (isPlayerAtFinish(closingPlayer)) {
+                if (!firstFinisherId) firstFinisherId = closingPlayer.id;
+                const remainingPlayer = getRemainingPlayer();
+                if (remainingPlayer) {
+                    turn = remainingPlayer.id;
+                    pendingDicePlayer = remainingPlayer;
+                    updateStatus();
+                    persistGameState('none');
+                    setTimeout(() => showTurnTrigger(pendingDicePlayer), 500);
+                    return;
+                }
+
+                updateStatus();
+                persistGameState('roundEnd');
+                setTimeout(openRoundEndModal, 350);
+                return;
+            }
+
+            const preferredNext = getOtherPlayer(closingPlayer);
+            const nextPlayer = isPlayerAtFinish(preferredNext) ? closingPlayer : preferredNext;
+            turn = nextPlayer.id;
+            pendingDicePlayer = nextPlayer;
+            updateStatus();
+            persistGameState('none');
+            setTimeout(() => showTurnTrigger(pendingDicePlayer), 500);
+        }
+
+        function updateStatus() {
+            return;
+        }
+
+        window.onload = () => {
+            init();
+        };
+        window.onresize = () => {
+            updatePos(p1);
+            updatePos(p2);
+            positionBoardDiceResult();
+            if (pendingChallengePlayer) showChallengeTrigger(pendingChallengePlayer);
+        };
+        window.addEventListener('scroll', positionBoardDiceResult, { passive: true });
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                requestWakeLock();
+                syncTimerState();
+            }
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../service-worker.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

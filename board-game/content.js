@@ -1,0 +1,300 @@
+window.BoardGameContent = {
+    maxRound: 3,
+    startAnchor: { x: 220, y: 40 },
+    mysteryChallengesByRound: {
+        0: [
+            { label: "Spegling", text: "$ACTOR, be $TARGET utföra en smekning på dig där hen behagar. Efter 30 sekunder ska du spegla rörelsen exakt på $TARGET." },
+            { label: "Värmevåg", text: "$ACTOR, gnugga dina händer mot varandra tills de blir riktigt varma. Placera dem sedan på valfri bar hud på $TARGET och håll dem kvar tills klockan ringer." },
+            { label: "Viskningen", text: "$ACTOR, ställ dig bakom $TARGET och viska tre saker du vill göra ikväll. Avsluta med att kyssa $TARGET bakom örat eller på halsen efter varje viskning." },
+            { label: "Andetag", text: "$ACTOR, placera din mun en millimeter från $TARGETs hud vid nacken. Blås långsamt varma andetag utan att faktiskt vidröra huden med läpparna." },
+            { label: "Lätt beröring", text: "$ACTOR, använd dina fingertoppar eller ett lätt klädesplagg för att smeka $TARGET över hela ryggen. Rörelsen ska vara så lätt att det nästan kittlas." },
+            { label: "Värme och närhet", text: "$ACTOR, ställ dig tätt bakom $TARGET so att ni känner varandras kroppsvärme. Massera nacke och axlar med dina händer utan att säga ett ord förrän klockan ringer." },
+            { label: "Vibration", text: "$ACTOR, använd en vibrator mot $TARGETs kön utanpå underkläderna. Öka intensiteten gradvis och be $TARGET beskriva hur det känns." },
+            { label: "Fjäderlätt", text: "$ACTOR, använd dina läppar för att vandra från $TARGETs axel, längs med halsen och upp mot örat - ingen kyss, bara smekande läppar mot bar hud." }
+        ],
+        1: [
+            { label: "Sammetsmjukt", text: "$ACTOR, smek $TARGETs kön och insida lår med ett mjukt tygstycke eller en flogger som du drar fram och tillbaka. Visa att du har kontrollen genom att då och då stanna upp helt och bara låta tyget vila lätt mot huden." },
+            { label: "Isolerad njutning", text: "$ACTOR, välj en kroppsdel på $TARGET som du ska fokusera på i två minuter. Du får bara använda din tunga och dina läppar. Resten av din kropp får inte nudda $TARGET." },
+            { label: "Skuggan", text: "$ACTOR, ställ dig bakom $TARGET framför en spegel. Smek $TARGETs kön och bröst medan ni båda ser på. Fokusera på den visuella njutningen i spegelbilden." },
+            { label: "Laddad olja", text: "$ACTOR, droppa varm massageolja på $TARGETs svank. Använd dina bröst eller din bröstkorg för att massera in oljan över hela $TARGETs rygg." },
+            { label: "Siden & Hud", text: "$ACTOR, dra ett silkigt plagg eller en bit underkläder över $TARGETs ansikte, bröstvårtor och kön. Blunda och fokusera helt på hur det mjuka tyget retar nerverna." },
+            { label: "Fingrar...", text: "$ACTOR, för in ett finger i $TARGETs mun medan du smeker hens kön med den andra handen. Håll ögonkontakten oavbruten." },
+            { label: "Fresterskan", text: "$ACTOR, dra ner dina egna underkläder till hälften och be $TARGET att bara titta, inte röra, medan du rör dig utmanande framför hen." },
+            { label: "Utlämnad", text: "$TARGET ska blunda och hålla händerna bakom ryggen. $ACTOR, utforska $TARGETs ansikte och hals med dina fingertoppar och din mun medan $TARGET är helt passiv." },
+            { label: "Fingertoppar", text: "$ACTOR, smörj in dina fingertoppar med massageolja. Massera $TARGETs bröstvårtor i cirklar medan du ser hen djupt i ögonen utan att säga ett ord." },
+            { label: "Vibration", text: "$ACTOR, använd en vibrator på och runt $TARGETs kön. Öka intensiteten gradvis och be $TARGET beskriva hur det känns." },
+            { label: "Baksak", tags: ["anal"], text: "$ACTOR, massera $TARGETs bakdel med massageolja. Be $TARGET uppmärksamma om något i massagen känns extra skönt." },
+            { label: "Oljelek", text: "$ACTOR, häll en sträng olja på $TARGETs lår. Använd din egen underarm för att sprida ut den med långa, tryckande drag som rör sig närmare könet för varje gång." }
+        ],
+        2: [
+            { label: "Tystnad!", text: "$ACTOR tar kontrollen - Lägg dig mellan $TARGETs särade lår. Med dina läppar och dina andetag smeker du varsamt där du själv önskar. Varje gång $TARGET ger ifråm sig ett ljud, ger du ett lätt nyp i bröstvårtan." },
+            { label: "Se på mig", text: "Ligg på sidan i en öppen 69:a. Håll ett lätt avstånd mellan er, så ni ser varandra perfekt. Ge er själva njutning medan ni tar in synen av vad er partner gör med sig själv." },
+            { label: "Beordrad smekning", text: "$TARGET, berätta var du vill bli smekt. $ACTOR, vänta tills $TARGET ber dig smeka en specifik punkt och gör det med passion." },
+            { label: "Positionerad", text: "$ACTOR, ställ $TARGET bredbent och lätt framåtlutad mot en möbel. Smek $TARGET bakifrån med fasta tag och berätta exakt vad du gör, när du gör det." },
+            { label: "Lyda eller lida", tags: ["spanking", "bdsm"], text: "$ACTOR, beordra $TARGET att inta en specifik position där du sen gör vad du själv behagar. Om $TARGET rör sig utan tillåtelse, ger du tre snabba handflator mot skinkorna." },
+            { label: "Kontrollerad vibration", tags: ["bdsm"], text: "$ACTOR, använd en vibrator på $TARGETs kön. Varje gång $TARGET försöker röra på höfterna för att möta eller flytta stimulansen, drar du dig undan och kräver stillhet." },
+            { label: "Bit mig!", text: "$ACTOR, ge $TARGET små, lekfulla bett på insidan av låren och längs höftkammen. Lämna små märken som bevis på din närvaro." },
+            { label: "Baksak?", tags: ["anal"], text: "$ACTOR, använd rikligt med glidmedel på dina fingrar. Retas vid ingången till $TARGETs bakre öppning och retas med en fingertopp precis i öppningen." },
+            { label: "Siden & Hud", text: "$ACTOR, dra ett silkigt plagg eller en bit underkläder över $TARGETs bröstvårtor och kön. Blunda båda två och fokusera helt på hur det mjuka tyget retar nerverna." },
+            { label: "Bi-fantasy", tags: ["bi"], text: "$ACTOR, beskriv en scen där ni tillsammans leker med en främling av samma kön som $TARGET. Berätta i detalj vad främlingen gör, medan du utför det på $TARGET." },
+            { label: "Bunden Lust", tags: ["spanking", "bdsm"], text: "$ACTOR, ställ $TARGET vänd mot väggen, nära utan att nudda. Håll $TARGETs händer bakom ryggen eller över huvudet samtidigt som du delar ut lekfulla smisk på bakdelen." },
+            { label: "Onanera mera", text: "Ligg på sidan i en öppen 69:a. Håll ett lätt avstånd mellan er, så ni ser varandra perfekt. Ge varandra njutning med händerna eller en valfri leksak." },
+            { label: "Smakprov", text: "$ACTOR, smörj in ditt finger med glidmedel, ätbar massageolja, ditt eget saliv eller något annat smakfullt från din eller $ACTORs kropp. Med ögonbindel på, låt $TARGET smaka, slicka och suga på fingret och berätta hur det smakar." },
+            { label: "Se men inte röra...", text: "$TARGET vilar på rygg med händerna låsta under sig. $ACTOR, utforska $TARGETS kropp med din egen. Smek honom med allt du har – läppar, hår och hud – så länge du lämnar dina händer utanför leken." }
+        ],
+        3: [
+            { label: "Ansiktslek", text: "$ACTOR, sätt dig grensle över eller bredvid $TARGETs ansikte. Använd en vibrator på dig själv precis framför hens ögon. Låt $TARGET smaka på dig med jämna mellanrum." },
+            { label: "Gemensam massage", text: "$ACTOR, massera $TARGETs kön med ditt eget, utan att penetrera. I en ställning du själv bestämmer." },
+            { label: "Oändlig penetration", text: "$ACTOR, penetrera $TARGET långsamt. För varje stöt ska du viska en sak du älskar med $TARGET. Öka tempot tills ni båda tappar andan." },
+            { label: "Vätskeutbyte", text: "$ACTOR, fyll din mun med din egen eller $TARGETs vätska efter stimulans. Kyssa $TARGET djupt och låt vätskan rinna mellan era munnar i en passionerad kyss." },
+            { label: "Total kapitulation", text: "$ACTOR, välj din absoluta favoritställning. Beordra $TARGET att vara helt passiv och bara ta emot din njutning. Du tar vad du vill ha, precis som du vill ha det." },
+            { label: "Smakens makt", text: "$ACTOR, efter att ha stimulerat $TARGETs kön med din hand, för dina fingrar till din egen mun och smaka långsamt. Säg sedan till $TARGET att slicka dina fingrar rena." },
+            { label: "Smakens makt", tags: ["bdsm"], text: "$ACTOR, be om att få oralsex - du ger kommandon och $TARGET måste följa dina direktiv - $TARGET gör inget mot ditt kön som du inte har sagt ska göras." },
+            { label: "Dubbel stimulans", tags: ["anal"], text: "$ACTOR, använd en leksak på $TARGETs bakre öppning samtidigt som du använder din hand, mun eller ditt kön för att stimulera könet." },
+            { label: "Heta droppar", text: "$ACTOR, fyll munnen med dricka eller använd din egen saliv och låt det rinna från din tunga ner över $TARGETs bröst för att sen leka med mun och tunga över det blöta. " },
+            { label: "Het mun", tags: ["bdsm"], text: "$ACTOR, smek $TARGETs läppar med ditt kön, munnen förblir stängd tills du ger tillåtelse. Använd korta meningar som - Öppna munnen, tunga ut, tunga in, stäng munnen, slicka, sug - för att styra din egen njutning." },
+            { label: "Tyst massage", tags: ["anal"], text: "$ACTOR, använd valfri kroppsdel eller sexleksak för att massera $TARGET mellan skinkorna och reta den bakre öppningen. I en ställning du väljer. Om $TARGET ger ifrån sig ljud påminner du med ett lekfullt rapp på skinkan." },
+            { label: "Glid, Glid, Glid", tags: ["anal"], text: "$ACTOR, använd rikligt med glidmedel och en dildo eller dina fingrar i $TARGETs bakre öppning. Samtidigt smeker du $TARGETs kön mot dina läppar och delar ut ömma kyssar samtidigt som du långsamt arbetar dig in och ut där bak." }
+        ]
+    },
+    tilesData: [
+        { type: "hands", label: "Händer", x: 270, y: 330 },
+        { type: "mouth", label: "Mun", x: 600, y: 330 },
+        { type: "breasts", label: "Bröst", x: 930, y: 330 },
+        { type: "butt", label: "Rumpa", x: 1280, y: 330 },
+        { type: "mystery", label: "?!?", x: 1280, y: 585 },
+        { type: "hands", label: "Händer", x: 1280, y: 850 },
+        { type: "mouth", label: "Mun", x: 930, y: 850 },
+        { type: "breasts", label: "Bröst", x: 600, y: 850 },
+        { type: "butt", label: "Rumpa", x: 270, y: 850 },
+        { type: "mystery", label: "?!?", x: 270, y: 1100 },
+        { type: "hands", label: "Händer", x: 270, y: 1390 },
+        { type: "mouth", label: "Mun", x: 600, y: 1390 },
+        { type: "breasts", label: "Bröst", x: 930, y: 1390 },
+        { type: "butt", label: "Rumpa", x: 1280, y: 1390 },
+        { type: "mystery", label: "?!?", x: 1280, y: 1650 },
+        { type: "hands", label: "Händer", x: 1280, y: 1925 },
+        { type: "mouth", label: "Mun", x: 930, y: 1925 },
+        { type: "breasts", label: "Bröst", x: 600, y: 1925 },
+        { type: "butt", label: "Rumpa", x: 270, y: 1925 },
+        { type: "mystery", label: "?!?", x: 270, y: 2180 },
+        { type: "finish", label: "Mål", x: 760, y: 2440 }
+    ],
+    gameContentByIntensity: [
+        // Nivå 1: Mjuk Start
+        [
+            { label: "hands_male", text: `$ACTOR, låt dina händer massera $TARGETs lår. Smek henne med en lekfull hand utanpå underkläderna då och då för att markera din närvaro.` },
+            { label: "hands_male", text: `$ACTOR, använd baksidan av dina händer för att smeka $TARGET från brösten upp mot halsen och ner igen. Låt beröringen vara fjäderlätt och retsam.` },
+            { label: "hands_male", text: `$ACTOR, ta tag om $TARGETs handleder och håll dem mjukt mot sänggaveln eller bakom hennes rygg, låt din andra hand gå på upptäcksfärd där du vill.` },
+            { label: "hands_male", text: `$ACTOR, smörj in dina händer med massageolja. Massera $TARGETs händer långsamt, finger för finger, medan du håller ögonkontakt.` },
+            { label: "hands_male", text: `$ACTOR, låt dina händer vandra precis under kanten på tyget till $TARGETs trosor. Smek runtom och känn in värmen från henne.` },
+            { label: "hands_male", text: `$ACTOR, använd dina händer för att massera $TARGETs underarmar.` },
+
+            { label: "hands_female", text: `$ACTOR, låt dina händer massera $TARGETs lår. Smek honom med en lekfull hand utanpå underkläderna då och då för att markera din närvaro.` },
+            { label: "hands_female", text: `$ACTOR, använd baksidan av dina händer för att smeka $TARGET från magen upp mot halsen och ner igen. Låt beröringen vara fjäderlätt och retsam över hans bröstkorg och bröstvårtor.` },
+            { label: "hands_female", text: `$ACTOR, placera dina händer på $TARGETs nacke. Massera nacken med ett stadigt grepp och dra sedan fingrarna långsamt genom hans hår.` },
+            { label: "hands_female", text: `$ACTOR, låt dina händer utforska $TARGETs armar. Börja vid axlarna och glid långsamt ner till handlederna och tillbaka igen.` },
+            { label: "hands_female", text: `$ACTOR, låt dina händer vandra in under $TARGETs linne eller skjorta. Smek hans rygg och länd, känn värmen från hans hud mot dina handflator.` },
+            { label: "hands_female", text: `$ACTOR, använd dina naglar för att rispa fjäderlätt över $TARGETs underarmar. Öka trycket precis så mycket att han ryser av välbehag.` },
+
+            { label: "mouth", text: `$ACTOR, sök upp de känsliga punkterna på $TARGETs hals och bakom öronen med mjuka, varma kyssar.` },
+            { label: "mouth", text: `$ACTOR, be $TARGET sitta helt still med stängd mun. Använd dina egna fuktade läppar och tunga för att fjäderlätt smeka $TARGETs läppar. När klockan ringer, avslutar du med en djup kyss.` },
+            { label: "mouth", text: `$ACTOR, andas varm luft mot $TARGETs öra och viska en hemlighet om vad du vill göra senare ikväll. Avsluta med att nafsa försiktigt i örsnibben.` },
+            { label: "mouth", text: `$ACTOR, ge $TARGET en lång och varm tungkyss.` },
+            { label: "mouth", text: `$ACTOR, låt din tunga följa konturerna av $TARGETs öra. Varva blöta slickar med mjuka sug för att skapa en elektrisk känsla.` },
+            { label: "mouth", text: `$ACTOR, placera en mjuk kyss på $TARGETs båda ögonlock och rör dig sedan långsamt ner mot käklinjen. Dröj kvar precis vid mungipan.` },
+
+            { label: "breasts_male", text: `$ACTOR, stå bakom en sittande $TARGET och massera hennes axlar och fortsätt sen ner mot hennes bröst för att krama dom med mjuka händer utanpå underkläderna.` },
+            { label: "breasts_male", text: `$ACTOR, låt dina fingertoppar rita fjäderlätta cirklar runt hennes bröstvårtor utanpå kläderna. Se om de reagerar på din beröring.` },
+            { label: "breasts_male", text: `$ACTOR, luta dig fram och kyss $TARGET mellan brösten och på huden du kommer åt, på brösten, ovanför BH'n.` },
+            { label: "breasts_male", text: `$ACTOR, använd dina händer för att massera $TARGETs bröst genom tyget av hennes bh eller topp. Varva massagen med ett fast grepp om brösten.` },
+            { label: "breasts_male", text: `$ACTOR, låt dina fingrar smeka in under tyget på $TARGETs bh eller urringning. Låt fingrarna som hastigast smeka över bröstvårtorna men lägg fokus på huden runtomkring.` },
+            { label: "breasts_male", text: `$ACTOR, kupade händer ger trygghet. Håll om $TARGETs bröst underifrån och lyft dem lätt medan du ger henne en komplimang om hur vacker hon är.` },
+
+            { label: "breasts_female", text: `$ACTOR, ställ dig bakom en sittande $TARGET. Massera hans axlar och låt händerna glida ner över bröstkorgens för att krama hans bröstmuskler med fasta, trygga grepp.` },
+            { label: "breasts_female", text: `$ACTOR, låt dina naglar vandra fjäderlätt över hans bröst. Vågar du öka intensiteten och riva tag lite extra för att lämna små, vita märken i hans hud? Fokusera helt på $TARGETs reaktion när du tar i.` },
+            { label: "breasts_female", text: `$ACTOR, smek $TARGETs bröstkorg med cirkulära rörelser. Låt ena handen vila över hans hjärta och känn hur hans puls ökar av din närhet.` },
+            { label: "breasts_female", text: `$ACTOR, använd din tunga för att rita små cirklar runt $TARGETs bröstvårtor. Fukten från din mun kommer skapa en spännande kyla och värme.` },
+            { label: "breasts_female", text: `$ACTOR, bit försiktigt i $TARGETs bröstmuskel. Inte för hårt, bara tillräckligt för att markera din närvaro.` },
+            { label: "breasts_female", text: `$ACTOR, låt dina fingertoppar vandra från hans navel upp till nyckelbenen i en långsam, rak linje.` },
+
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, ställ er mot varandra, tätt intill. Omslut varandra i en kram medan du omfamnar $TARGETs rumpa med dina händer och masserar den mjukt. Avsluta med en lekfull klapp som markerar din närvaro när klockan ringer.` },
+            { label: "butt", text: `$ACTOR, ställ dig bakom $TARGET som böjer sig fram över sängen. Låt dina händer smeka över skinkorna och rispa långsamt med naglarna i långa, mjuka drag som lämnar små vita ränder.` },
+            { label: "butt", text: `$ACTOR, använd båda händerna för att ge $TARGET en ordentlig massage av sätet. Knåda bestämt men kärleksfullt utanpå underkläderna.` },
+            { label: "butt", text: `$ACTOR, låt dina händer glida in under linningen på $TARGETs underkläder, precis så långt att du kan känna huden på den övre delen av skinkorna.` },
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, ge $TARGET tre snabba, lekfulla smisk på vardera skinka. Öka styrkan för varje omgång och lyssna efter en reaktion.` },
+            { label: "butt", text: `$ACTOR, smek insidan av $TARGETs lår, precis där de möter skinkorna. Håll kvar fingrarna där en stund och känn spänningen som byggs upp.` }
+        ],
+        // Nivå 2: Värmen Stiger
+        [
+            { label: "hands_male", text: `$ACTOR, väck $TARGETs lust med en vibrator. Låt vibrationerna dansa över huden runtom hennes kön utanpå eller innanför underkläderna – fokusera helt på de yttre, känsliga delarna, utan penetration.` },
+            { label: "hands_male", text: `$ACTOR, använd en dildo och glidmedel för att smeka henne runtom hennes öppning, men kom ihåg: ingen penetration är tillåten än.` },
+            { label: "hands_male", tags: ["bdsm"], text: `$ACTOR, ta fram ett mjukt sidenband eller en ögonbindel. Täck $TARGETs ögon och använd dina fingertoppar för att utforska hennes insida lår, centimeter för centimeter, tills hon darrar.` },
+            { label: "hands_male", text: `$ACTOR, använd en isbit (eller något kallt) och dra den långsamt längs $TARGETs ryggrad och ner mot skinkorna. Följ genast efter med dina varma läppar för att skapa en sensorisk chock.` },
+            { label: "hands_male", text: `$ACTOR, sätt dig mellan $TARGETs ben. Använd dina tummar för att massera i små cirklar, uppför och nedför, på var sida om hennes yttre blygdläppar utan att penetrera.` },
+            { label: "hands_male", text: `$ACTOR, be $TARGET sära på benen. Använd dina händer för att massera henne som du själv behagar, men sluta innan det blir för mycket.` },
+            { label: "hands_male", text: `$ACTOR, lägg $TARGET på rygg med händerna låsta bakom hennes huvud - använd dina händer som du vill, där du vill, avsluta med ett finger i $TARGETS mun när klockan ringer.` },
+
+            { label: "hands_female", text: `$ACTOR, använd en vibrator för att testa $TARGETs erogena zoner. Börja vid toppen på hans lem och rör dig långsamt, långsamt ner mellan benen. Lyssna på varje andetag för att avgöra om du ska stanna vid hans lem eller om du ska fortsätta utforska.` },
+            { label: "hands_female", text: `$ACTOR, be $TARGET stå på golvet medan du sitter framför honom i sängen, använd en stroker eller dina händer och rikligt med glidmedel för att smeka hans lem. Smek fram och tillbaka längs hela hans längd, men kom ihåg: håll tempot lugnt, långsamt och retsamt.` },
+            { label: "hands_female", text: `$ACTOR, använd dina naglar för att dra över $TARGETs rygg och axlar.` },
+            { label: "hands_female", text: `$ACTOR, massera $TARGETs testiklar med en god mängd glidmedel eller massageolja, utan att röra skaftet.` },
+            { label: "hands_female", text: `$ACTOR, ta tag om $TARGET och dra honom mot dig. Använd dina händer för att massera hans rygg och rumpa medan ni kysser varandra.` },
+            { label: "hands_female", tags: ["bdsm"], text: `$ACTOR, be $TARGET lägga sina händer bakom huvudet. Använd dina händer för att utforska det du vill utforska mest.` },
+            { label: "hands_female", text: `$ACTOR, lägg $TARGET på rygg med händerna låsta bakom hans huvud - använd dina händer som du vill, där du vill, avsluta med ett finger i $TARGETS mun när klockan ringer.` },
+
+            { label: "mouth", text: `$ACTOR, låt dina läppar utforska $TARGETs bröstvårtor. Håll munnen stängd och använd bara läpparna – växla mellan heta andetag och mjuka smekningar.` },
+            { label: "mouth", text: `$ACTOR, lägg dig mellan $TARGETs ben och håll din mun så nära du kan utan att nudda. Blås och andas tungt för att stimulera utan beröring. När klockan ringer, ger du en blöt kyss direkt på $TARGETs kön.` },
+            { label: "mouth", text: `$ACTOR, ta en klunk kallt vatten (eller vin). Kyss $TARGET djupt och låt den svala vätskan vandra mellan era munnar innan du sväljer och fortsätter smeka hens tunga med din.` },
+            { label: "mouth", text: `$ACTOR, använd din tunga för att rita en linje från $TARGETs navel, ner över könet och hela vägen till insidan av låret.` },
+            { label: "mouth", text: `$ACTOR, bit $TARGET lekfullt i axeln eller nacken. Sug tag i huden så att det nästan blir ett märke, och lugna sedan området med en mjuk, förlåtande kyss.` },
+            { label: "mouth", tags: ["bdsm"], text: `$ACTOR, kyss $TARGET från örsnibben, över käklinjen, fram till hakan. Kyss och nafsa om vartannat, tag i underläppen med dina tänder och dra försiktigt för att visa din dominans.` },
+            { label: "mouth", text: `$ACTOR, lägg $TARGET på rygg med händerna låsta bakom hens huvud - använd din mun som du vill, där du vill, avsluta med en kyss när klockan ringer.` },
+
+            { label: "breasts_male", text: `$ACTOR, ställ er mitt emot varandra. Klä av $TARGET på överkroppen och ta in åsynen av henne. Massera hennes bröst och bröstvårtor med en blandning av mjuka handflator och retsamma fingertoppar. Lyft, nyp och smek brösten medan ni håller ögonkontakt.` },
+            { label: "breasts_male", text: `$ACTOR, ställ dig bakom en sittande $TARGET. Använd massageolja och låt dina händer omsluta hennes bröst i sin helhet. Fokusera på långa, njutningsfulla drag och beröring. Massera över bröstvårtorna utan att nypa, dra eller ge dem direkt uppvaktning.` },
+            { label: "breasts_male", text: `$ACTOR, använd din tunga för att "måla" $TARGETs bröst. Börja vid basen och rör dig i en spiral inåt tills du kan ta hela bröstvårtan i din mun och suga tag...` },
+            { label: "breasts_male", text: `$ACTOR, dra dina fingrar genom $TARGETs hår och dra hennes huvud bakåt. Kyss henne från halsen ner mot brösten samtidigt som du låter dina händer arbeta rytmiskt med att forma och stimulera hennes bröst.` },
+            { label: "breasts_male", text: `$ACTOR, be $TARGET att själv massera sina bröst framför dig. Titta på när hon gör det och ge henne instruktioner om hur hårt eller mjukt hon ska ta i sig själv.` },
+            { label: "breasts_male", text: `$ACTOR, placera dina händer över $TARGETs bröst och tryck dem samman så att en djup klyfta bildas. Kyss klyftan långsamt och njut av doften av hennes hud.` },
+            { label: "breasts_male", tags: ["bi"], text: `$ACTOR, sitt eller stå bakom $TARGET, massera hans axlar och bröst - samtidigt som du viskar i hans öra vad du skulle själv vilja göra med en annan kvinnas bröst, om hon låg naken framför er, just nu.` },
+            { label: "breasts_male", tags: ["bi"], text: `$ACTOR, sitt eller stå bakom $TARGET, massera hennes axlar och bröst - samtidigt som du viskar i hennes öra vad du skulle själv vilja göra med en annan mans lem, om han låg naken framför er, just nu.` },
+
+            { label: "breasts_female", text: `$ACTOR, ställ er mitt emot varandra. Klä av $TARGET på överkroppen och ta in åsynen av honom. Massera hans bröstkorg med en blandning av mjuka handflator och retsamma fingertoppar blandat med nyp och rispande naglar.` },
+            { label: "breasts_female", text: `$ACTOR, ställ dig bakom en sittande $TARGET. Använd massageolja och låt dina händer omsluta hans bröstmuskler. Fokusera på långa, njutningsfulla drag och tyngd. Undvik direkt kontakt med bröstvårtorna – låt förväntan bygga upp spänningen.` },
+            { label: "breasts_female", text: `$ACTOR, luta dig fram och låt ditt hår svepa över $TARGETs bara bröst. Använd dina bröst för att massera hans bröstkorg i mjuka, böljande rörelse.` },
+            { label: "breasts_female", text: `$ACTOR, fokusera helt på $TARGETs bröstvårtor. Använd dina fingertoppar för att rulla och dra i dem. Se hur han reagerar när du varierar mellan fjäderlätt beröring och ett fastare grepp.` },
+            { label: "breasts_female", text: `$ACTOR, massera ut olja över hans bröst och använd dina händer eller kropp för att massera honom. Det ger en annan typ av tryck och en väldigt intim kroppskontakt.` },
+            { label: "breasts_female", text: `$ACTOR, använd din mun för att utforska hans bröst. Bit och nafsa försiktigt i muskulaturen runt bröstvårtorna och avsluta med att blåsa kall luft på den blöta huden.` },
+            { label: "breasts_female", tags: ["bi"], text: `$ACTOR, sitt eller stå bakom $TARGET, massera hans axlar och bröst - samtidigt som du viskar i hans öra vad du skulle själv vilja göra med en annan kvinnas bröst, om hon låg naken framför er, just nu.` },
+            { label: "breasts_female", tags: ["bi"], text: `$ACTOR, sitt eller stå bakom $TARGET, massera hans axlar och bröst - samtidigt som du viskar i hans öra vad du skulle själv vilja göra med en annan mans lem, om han låg naken framför er, just nu.` },
+
+            { label: "butt", text: `$ACTOR, använd varm olja för att massera $TARGETs rumpa och insida lår. Fokusera på att bygga upp en elektrisk spänning genom att variera trycket i dina handflator och vandra högt upp på insidan av låren.` },
+            { label: "butt", tags: ["anal", "spanking", "bdsm"], text: `$ACTOR, be $TARGET ligga helt stilla på mage med särade ben. Använd en generös mängd olja eller glidmedel för att utforska området mellan skinkorna. Massera retsamt nära den bakre öppningen utan att vidröra den direkt – om $TARGET har svårt att ligga still, påminn med lätta, snabba smisk.` },
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, sätt dig grensle över $TARGETs ena lår när hen ligger på mage. Använd dina händer för att massera skinkorna och beundra vyn. Fråga om du får ge en serie smisk som lämnar huden varm.` },
+            { label: "butt", text: `$ACTOR, använd en mjuk fjäder eller ett par lätta trosor för att kittla $TARGET över hela baksidan, från knävecken upp till midjan. Dröj kvar extra länge vid de känsliga kurvorna på rumpan.` },
+            { label: "butt", tags: ["anal"], text: `$ACTOR, lägg dig mellan $TARGETs ben med ditt ansikte nära skinkorna. Använd kyssar och din andning för att kittla huden både på och in i mellan skinkorna, så långt du vågar och får.` },
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, be $TARGET ställa sig på alla fyra. Använd dina händer eller en pisk på hens rumpa, fråga hur det känns mellan träffarna.` }
+        ],
+        // Nivå 3: Djup Hängivelse
+        [
+            { label: "hands_male", text: `$ACTOR, placera dig mellan $TARGETs lår. Reta henne genom att långsamt föra in en leksak eller fingrar, pausa, och njut av hennes reaktion innan du långsamt drar ut den igen. Upprepa.` },
+            { label: "hands_male", tags: ["anal"], text: `$ACTOR, använd glidmedel och dina fingrar för att utforska $TARGETs innersta från en ny vinkel. Be henne stå på alla fyra i sängen och svanka ordentligt – låt dina fingrar vandra retsamt mellan hennes öppningar.` },
+            { label: "hands_male", text: `$ACTOR, använd dina fingrar för att massera $TARGETs klitoris med ett fast, rytmiskt tryck, från sida till sida. Börja långsamt för att sakta öka takten.` },
+            { label: "hands_male", text: `$ACTOR, sätt dig grensle eller på knä över $TARGETs bröst och använd en leksak eller dina händer på dig själv. Låt henne se men inte röra, när du gör det skönt för dig själv.` },
+            { label: "hands_male", text: `$ACTOR, massera hennes yttre och inre blygdläppar med en god mängd glidmedel, kläm och dra försiktigt i dem och lyssna på andningen.` },
+            { label: "hands_male", text: `$ACTOR, massera ut rikligt med glidmedel över hela $TARGETs kön, använd båda händerna för att massera henne långsamt, medan hon står på alla fyra.` },
+
+            { label: "hands_female", text: `$ACTOR, sätt dig mellan $TARGETs ben och massera det retsamma området bakom hans lem med mjuka, cirkulära rörelser. Be om ögonkontakt och lyssna på hans andning för att känna in hans reaktion.` },
+            { label: "hands_female", tags: ["anal"], text: `$ACTOR, använd glidmedel och dina fingrar och händer för att utforska $TARGETs känsligaste delar från en ny vinkel. Be honom stå på alla fyra i sängen – låt dina fingrar vandra retsamt från hans lem och bakåt.` },
+            { label: "hands_female", text: `$ACTOR, ta ett stadigt tag om basen på $TARGETs lem. Använd din andra handflata för att massera hans ollon med små cirkelrörelser. Om han försöker röra på sig, klämmer du till runt basen på lemmen.` },
+            { label: "hands_female", tags: ["anal", "bdsm"], text: `$ACTOR, använd en vibrator mot $TARGETs pung och mellangård. Öka intensiteten gradvis och kräv att han beskriver exakt hur det känns, utan att han får röra vid dig.` },
+            { label: "hands_female", tags: ["bdsm"], text: `$ACTOR, sätt dig gränsle över $TARGETs ansikte och låt honom känna din doft och din väta, utan att röra. Använd dina händer för att leka med hans lem medan du ser ner på honom med en blick som kräver lydnad.` },
+            { label: "hands_female", text: `$ACTOR, massera ut rikligt med glidmedel över hela $TARGETs kön. Använd båda händerna för att massera honom långsamt, medan han står på alla fyra.` },
+            { label: "hands_female", text: "$ACTOR, smörj ditt ena bröst med glidmedel och låt bröstet och bröstvårtan massera toppen och den känsliga delen av $TARGETs lem och ollon. Använd dina händer för att styra trycket med lemmen mot ditt bröst." },
+
+            { label: "mouth", text: `$ACTOR, ge $TARGET den våtaste orala njutning du kan frambringa. Växla mellan att låta saliv droppa ner över könet från din mun och intensiv oral stimulans. Kräv oavbruten ögonkontakt med $TARGET så att du ser varje reaktion.` },
+            { label: "mouth", text: `$ACTOR, ge $TARGET en intensiv oral upplevelse. Ge ditt allt med kyssar, slick, sug och nafs – men se till att $TARGET stannar precis vid gränsen utan att nå klimax.` },
+            { label: "mouth", text: `$ACTOR, använd din tunga på $TARGETs kön, inget sug eller kyss. Stimulera de mest känsliga punkterna med din tunga samtidigt som dina händer håller ett hungrigt grepp om hens skinkor.` },
+            { label: "mouth", text: `$ACTOR, börja med att slicka $TARGETs kön extremt långsamt, som om du vill smaka på varje millimeter. Öka sedan tempot och använd dina läppar för att skapa ett hårt sug.` },
+            { label: "mouth", tags: ["anal"], text: `$ACTOR, fokusera din mun så nära $TARGETs analöppning du vågar och får. Använd din tunga och blöta läppar för att utforska området mjukt men envist.` },
+            { label: "mouth", text: `$ACTOR, ställ dig på golvet bredvid sängen med $TARGET liggandes på rygg, växla mellan att ge kyssar på munnen och kyssar på könet om vartannat.` },
+            { label: "mouth", text: "$ACTOR, använd din mun för att skapa ett lätt sug på $TARGETs insida lår, precis vid ljumsken. Varva med att andas varmt och sedan blåsa kallt på den fuktiga huden." },
+
+            { label: "breasts_male", tags: ["bdsm"], text: `$ACTOR, be $TARGET ta på sig en ögonbindel och lägga sig ner. Använd dina händer och en vibrator för att reta hennes bröstvårtor. Kan du få dem att styvna innan klockan ringer?` },
+            { label: "breasts_male", tags: ["bdsm"], text: `$ACTOR, fixera $TARGETs händer över hennes huvud med din ena hand. Nyp i hennes bröstvårtor och dra lätt i dem med andra handen medan ni har ögonkontakt. Börja försiktigt och öka intensiteten allt eftersom.` },
+            { label: "breasts_male", text: `$ACTOR, låt dina läppar och försiktiga tänder nafsa över $TARGETs bröst. Sug tag i bröstvårtan och dra den utåt, samtidigt som du masserar det andra bröstet med ett fast, hungrigt grepp.` },
+            { label: "breasts_male", text: `$ACTOR, be $TARGET klämma ihop sina bröst, massera ut glid- eller massageolja över hennes bröst med hjälp av endast din lem.` },
+            { label: "breasts_male", text: `$ACTOR, använd dina händer för att massera och klämma ihop $TARGETs bröst. Slicka, sug och nafsa på hennes bröstvårtor för att rita cirklar som blir mindre och mindre tills de når centrum. Avsluta med att bita i dem precis så hårt att hon ger ifrån sig ett ljud.` },
+            { label: "breasts_male", text: `$ACTOR, massera $TARGETs bröst med dina väl inoljade händer. Be henne berätta vad hon gillar av det du gör och vad du ska göra mer av.` },
+
+            { label: "breasts_female", tags: ["bdsm"], text: `$ACTOR, be $TARGET ta på sig en ögonbindel och lägga sig ner. Använd dina händer och en vibrator för att reta hans bröstvårtor. Kan du få dem att styvna innan klockan ringer?` },
+            { label: "breasts_female", tags: ["bdsm"], text: `$ACTOR, fixera $TARGETs händer över hans huvud med din ena hand. Använd dina naglar och fingrar för att nypa och dra i hans bröstvårtor medan ni har intensiv ögonkontakt. Öka intensiteten i takt med hans andhämtning.` },
+            { label: "breasts_female", text: `$ACTOR, använd din mun för att suga tag i $TARGETs bröstvårtor. Dra och nafsa i dem med tänderna och använd dina händer för att riva lätt över hans bröstkorg.` },
+            { label: "breasts_female", tags: ["bdsm"], text: `$ACTOR, pressa dina egna inoljade bröst mot $TARGETs bröstvårtor. Gnid er mot varandra i en hård, rytmisk rörelse och kräv att han håller sina händer bakom sin rygg hela tiden.` },
+            { label: "breasts_female", text: `$ACTOR, ta fram en isbit och dra den i cirklar runt $TARGETs bröstvårtor. När de dragit ihop sig helt, använd din varma tunga för att värma dem igen med långsamma slick.` },
+            { label: "breasts_female", tags: ["spanking"], text: `$ACTOR, nyp tag i $TARGETs bröstvårtor och dra dem i olika riktningar. Använd den andra handen för att ge honom ett stadigt smisk över bröstmuskeln för att väcka hans kropp ytterligare.` },
+
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, be $TARGET böja sig fram över sängen. Inled med lätta smisk som gradvis ökar i intensitet. Växla mellan att massera huden du smiskat och sedan fortsätta ge smisk.` },
+            { label: "butt", tags: ["anal"], text: `$ACTOR, be $TARGET stå på alla fyra. Använd en leksak för att massera den bakre öppningen och låt den glida retsamt mellan skinkorna, utan penetration. Samtidigt drar du lätt i $TARGETs hår eller placerar handen under hakan för att luta hens huvud bakåt.` },
+            { label: "butt", tags: ["anal"], text: `$ACTOR, massera ut rikligt med massageolja över $TARGETs skinkor. Använd dina händer för att massera muskulaturen, och glid sedan med fingrarna djupt in mellan skinkorna för att retas lite extra.` },
+            { label: "butt", tags: ["spanking"], text: `$ACTOR, ge $TARGET en serie med smisk över båda skinkorna tills de får en lätt rosa färg. Avsluta med att kyssa huden du precis smiskat och visa ömhet och kärlek.` },
+            { label: "butt", tags: ["anal"], text: `$ACTOR, be $TARGET ligga på mage. Använd dina fingrar för att penetrera $TARGETs bakre öppning, men bara med fingerspetsen, lätt och retsamt.` },
+            { label: "butt", tags: ["anal"], text: `$ACTOR, använd en leksak (t.ex. en vibrator eller dildo) för att massera $TARGETs bakre öppning. Massera runt om och tryck den mot och retas med öppningen - utan att föra in den helt.` },
+            { label: "butt", text: "$ACTOR, använd dina knogar för att massera $TARGETs skinkor med djupa, cirkulära rörelser. Öka trycket tills $TARGET spänner sig, och lätta då direkt för att övergå i fjäderlätta smekningar." },
+            { label: "butt", text: "$ACTOR, be $TARGET sära på benen ordentligt. Använd dina händer för att massera rumpan och könet så som du kommer åt. Be $TARGET lyfta på rumpan om det är skönt eller enklare att komma åt så." }
+        ],
+        // Nivå 4: Extatisk Final
+        [
+            { label: "hands_male", text: `$ACTOR, använd dina händer för att leda $TARGET så nära gränsen till klimax du bara kan, utan att låta henne gå över den. Lek med hennes frustration och njutning.` },
+            { label: "hands_male", tags: ["bdsm"], text: `$ACTOR, be $TARGET lägga sig på sängen med huvudet vid kanten och ögonbindel på. Ställ dig vid hennes huvud och massera hennes bröst med en generös mängd massageolja och lyssna på hennes andhämtning.` },
+            { label: "hands_male", text: `$ACTOR, sitt grensle över $TARGETs lår. Använd dina fingrar för att penetrera henne djupt och snabbt, samtidigt som din tumme ger hennes klitoris en kontrollerad uppmärksamhet.` },
+            { label: "hands_male", text: `$ACTOR, använd en kombination av två leksaker på $TARGET. En som stimulerar internt och en extern vibrator. Kör dem på högsta effekt i korta skurar, men dra bort dem precis innan hon tappar kontrollen.` },
+            { label: "hands_male", text: `$ACTOR, be $TARGET sitta på huk men böja sig fram. Massera hennes kön med hela handflatan i små hårda, tryckande stötar över hela vulvan - som simulerar samlag. Samtidigt masserar du henne över ryggen och rumpan.` },
+            { label: "hands_male", text: `$ACTOR, be $TARGET stå upp och luta sig mot en vägg. Gå ner på knä bakom henne och använd dina händer för att utforska henne bakifrån, dra henne lätt i håret om du kommer åt.` },
+            { label: "hands_male", tags: ["bi"], text: `$ACTOR, massera $TARGETs skinkor när hon ligger på mage. Viska lågt i hennes öra om en kväll ni tillsammans delar med en annan man. Beskriv vad du vill se $TARGET göra med den andra mannen, om han låg här mellan er två nu.` },
+            { label: "hands_male", tags: ["bi"], text: `$ACTOR, massera $TARGETs skinkor när hon ligger på mage. Viska lågt i hennes öra om en kväll ni tillsammans delar med en annan kvinna. Beskriv vad du vill se $TARGET göra med den andra kvinnan, om hon låg här mellan er två nu.` },
+
+            { label: "hands_female", text: `$ACTOR, använd dina händer för att leda $TARGET så nära gränsen till klimax du bara kan, utan att låta honom gå över den. Lek med hans frustration och njutning.` },
+            { label: "hands_female", tags: ["bdsm"], text: `$ACTOR, be $TARGET lägga sig på rygg med ögonbindel. Ställ dig på golvet vid hans huvud och massera honom från bröstkorgen ner mot hans lem med en generös mängd olja. Låt dina bröst nudda hans ansikte och reta hans mun medan du lyssnar på hans andhämtning.` },
+            { label: "hands_female", text: `$ACTOR, ta ett fast tvåhandsgrepp om $TARGETs lem. Utför en intensiv "milking"-rörelse med rikligt med glidmedel. Öka farten dramatiskt tills han ber dig sluta, men fortsätt tre sekunder till.` },
+            { label: "hands_female", text: `$ACTOR, be $TARGET sitta på en stol. Gå ner på knä mellan hans ben och använd en stroker eller dina händer för att stimulera honom, samtidigt som du använder den andra handen för att massera hans mellangård.` },
+            { label: "hands_female", text: `$ACTOR, använd dina naglar för att riva $TARGET över bröstet och magen samtidigt som du stimulera hans lem med en fast och hungrig hand. Viska i hans öra att han INTE får komma, hur skönt det än är.` },
+            { label: "hands_female", tags: ["anal"], text: `$ACTOR, använd glidmedel och dina fingrar för att massera $TARGETs prostata (via den bakre öppningen) samtidigt som du smeker hans lem. Hitta rytmen som får honom att tappa fattningen helt, utan att låta honom göra det.` },
+            { label: "hands_female", text: "$ACTOR, sitt grensle över $TARGETs bröstkorg med ryggen vänd mot honom. Använd dina händer för att ge tryck och kläm om hans lem och bollar i olika intensiteter som han aldrig provat förut – variera greppet, farten och trycket." },
+            { label: "hands_female", text: `$ACTOR, be $TARGET stå upp och luta sig mot en vägg. Stå bredvid och smek hans lem med en dildo, när klockan ringer slickar ni tillsammans rent dildon från hans doft och safter.` },
+            { label: "hands_female", tags: ["bi"], text: `$ACTOR, massera $TARGETs skinkor när han ligger på mage. Viska lågt i hans öra om en kväll ni tillsammans delar med en annan man. Beskriv vad du vill se $TARGET göra med den andra mannen, om han låg här mellan er två nu.` },
+            { label: "hands_female", tags: ["bi"], text: `$ACTOR, massera $TARGETs skinkor när han ligger på mage. Viska lågt i hans öra om en kväll ni tillsammans delar med en annan kvinna. Beskriv vad du vill se $TARGET göra med den andra kvinnan, om hon låg här mellan er två nu.` },
+
+            { label: "mouth", text: `$ACTOR, använd en leksak på $TARGET samtidigt som du ger oralsex. Välj själv om leksaken ska reta, massera, vibrera eller penetrera, i den ställning du anser ger mest njutning.` },
+            { label: "mouth", text: `$ACTOR, ta total kontroll. Ge oralsex men växla med att försiktigt nafsa och dra i $TARGETs kön med dina tänder och händer. Lyssna på flämtningarna för att veta om du ska öka eller sänka intensiteten.` },
+            { label: "mouth", tags: ["bdsm"], text: `$ACTOR, ge $TARGET en "deep throat"-upplevelse (eller motsvarande intensiv stimulans). Använd dina händer för att hålla $TARGETs höfter fixerade medan du arbetar hängivet med mun och tunga.` },
+            { label: "mouth", text: `$ACTOR, fyll munnen med en skvätt kall dryck och ge $TARGET den blötaste orala njutningen hittills. Låt vätskan rinna ner över könet, slicka upp det igen, upprepa.` },
+            { label: "mouth", tags: ["anal"], text: `$ACTOR, be $TARGET stå upp. Gå ner på knä och använd din mun för att utforska $TARGET bakifrån. Slicka och sug på allt du kommer åt tills $TARGETs ben darrar.` },
+            { label: "mouth", text: `$ACTOR, växla mellan att ge $TARGET intensiva kyssar och att blåsa varm luft på den blöta huden.` },
+
+            { label: "breasts_male", text: `$ACTOR, använd en dildo eller vibrator där nere på $TARGET medan du ligger bredvid henne i sängen och samtidigt suger, slickar och nafsar på hennes bröst.` },
+            { label: "breasts_male", text: `$ACTOR, be $TARGET lägga sig ner och pressa ihop brösten med sina händer. Massera henne mellan brösten med en dildo samtidigt som du ger hennes bröst uppmärksamhet så som du själv behagar.` },
+            { label: "breasts_male", text: `$ACTOR, nyp tag i $TARGETs båda bröstvårtor och dra dem uppåt. Samtidigt använder du din tunga för att stimulera hennes klitoris. Håll fast henne om hon försöker komma undan den intensiva känslan.` },
+            { label: "breasts_male", text: `$ACTOR, använd en vibrerande leksak direkt mot $TARGETs bröstvårtor på högsta effekt. Samtidigt använder du din andra hand för att massera hennes kön.` },
+            { label: "breasts_male", text: `$ACTOR, be $TARGET stå på alla fyra. Massera hennes bröst med hungriga grepp medan du masserar och klämmer på hennes rumpa.` },
+            { label: "breasts_male", text: `$ACTOR, låt din egen saliv rinna från din tunga ner över $TARGETs bröst. Sug och slicka upp det om och om igen, samtidigt som du masserar hela hennes kön med din handflata.` },
+
+            { label: "breasts_female", text: `$ACTOR, använd en dildo eller vibrator för att smeka $TARGETs lem medan du ligger tätt intill honom i sängen. Sug, slicka och nafsa samtidigt på hans bröstvårtor.` },
+            { label: "breasts_female", text: `$ACTOR, massera $TARGETs lem med dina bröst. Smörj in dem med rikligt med olja eller saliv och kläm hans lem hårt mellan dem. För dina bröst rytmiskt upp och ner utan att han tappar kontrollen.` },
+            { label: "breasts_female", text: `$ACTOR, sätt dig grensle över $TARGETs bröstkorg och kläm fast hans armar under dina ben. Massera dina egna bröst med olja eller saliv - se men inte röra...` },
+            { label: "breasts_female", text: `$ACTOR, använd dina tänder för att retas och dra i $TARGETs bröstvårtor samtidigt som du pressar dina egna bröst mot hans ansikte. Låt honom kvävas mjukt av din närhet.` },
+            { label: "breasts_female", text: `$ACTOR, använd en isbit på hans bröstvårtor och ta dem sedan direkt i din varma mun. Samtidigt tar du ett hårt tag om hans pung och masserar den med en bestämd hand.` },
+            { label: "breasts_female", text: `$ACTOR, be $TARGET ligga still. Smörj in dina bröst med olja och glid fram och tillbaka över hans bara bröstkorg och mage medan du stimulerar hans lem med händerna.` },
+            { label: "breasts_female", text: `$ACTOR, lägg dig på rygg med en dildo mellan dina bröst. Be $TARGET kyssa och slicka dina bröst samtidigt som ni tillsammans ger dildon uppmärksamhet.` },
+
+            { label: "butt", tags: ["anal"], text: `$TARGET väljer ställning. $ACTOR, massera den bakre öppningen och arbeta långsamt in ett finger med hjälp av rikligt med glidmedel. För ut det långsamt och upprepa rörelsen rytmiskt tills klockan ringer.` },
+            { label: "butt", tags: ["anal", "spanking"], text: `$ACTOR, använd rikligt med glidmedel. För in ett finger eller en dildo i $TARGETs bakre öppning och penetrera långsamt. Samtidigt ska du lätt och retsamt smiska över könet med din hand eller en flogger.` },
+            { label: "butt", text: `$ACTOR, be $TARGET stå på alla fyra. Använd en dildo för att penetrera $TARGET bakifrån. Håll ett stadigt tag i $TARGETs höfter och driv på tempot.` },
+            { label: "butt", tags: ["anal", "spanking"], text: `$ACTOR, använd dina fingrar för att sära på $TARGETs skinkor maximalt. Använd din tunga för att utforska öppningen med djupa, blöta slickar medan du smiskar insidan av låren.` },
+            { label: "butt", tags: ["anal", "bdsm"], text: `$ACTOR, för in en butt plug eller dildo i $TARGET. Låt den sitta kvar medan du utför en annan valfri sexuell handling. $TARGET måste fokusera på att hålla kvar leksaken oavsett vad du gör.` },
+            { label: "butt", tags: ["anal", "spanking"], text: `$ACTOR, ge $TARGET en serie riktigt hårda smisk över rumpan. Direkt efter sista slaget, penetrera $TARGET med fingrarna och känn hur musklerna darrar och slappnar av.` },
+            { label: "butt", text: "$ACTOR, be $TARGET ligga på mage. Placera dina underarmar över $TARGETs skinkor och använd din tyngd för att pressa uppifrån och ner i en rytmisk massage." },
+            { label: "butt", tags: ["spanking"], text: "$ACTOR, använd en kombination av smisk och massage. Ge tre smisk för att massera området omedelbart efteråt med massageolja. Upprepa tills klockan ringer." },
+            { label: "butt", text: "$ACTOR, använd dina händer för att sära $TARGETs ben brett isär. Använd en vibrator eller dildo för att stimulera könet samtidigt som du har ett fast grepp om skinkorna för att markera din närvaro." }
+        ]
+    ],
+    levelIntroContent: {
+        0: {
+            title: "Nivå 1 av 4",
+            text: "En romantisk introduktion med fokus på beröring, smekningar och massage. Lättklätt med underkläderna på som minst. Här bygger vi förväntan..."
+        },
+        1: {
+            title: "Nivå 2 av 4",
+            text: "Intensiteten ökar och beröringen blir djupare. Här är det okej att låta kläderna falla när ni själva känner att de är i vägen för njutningen."
+        },
+        2: {
+            title: "Nivå 3 av 4",
+            text: "Det är dags att låta hud möta hud. Vi tar steget till total nakenhet och öppnar dörren för djupare utforskande av dolda fantasier och maktspel. Finns det klädesplagg kvar så tar ni av dem innan ni startar omgången."
+        },
+        3: {
+            title: "Nivå 4 av 4",
+            text: "Allt fokus ligger på fullständig njutning. Släpp alla spärrar och njut. Det är dags att ge vika för lusten, hängivelsen och mötet mellan Er."
+        }
+    }
+};
