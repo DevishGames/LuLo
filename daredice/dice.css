@@ -278,7 +278,7 @@ h1 {
     max-width: 88%;
     overflow-wrap: anywhere;
     color: #1d0800;
-    font-size: clamp(1.05rem, 3.6vw, 2.45rem);
+    font-size: clamp(1.28rem, 4.2vw, 2.8rem);
     font-weight: 900;
     line-height: 1.05;
     text-align: center;
@@ -409,9 +409,9 @@ h1 {
     }
 
     .dice-value {
-        max-width: 88%;
-        font-size: clamp(0.8rem, 3vw, 1.22rem);
-        line-height: 1.12;
+        max-width: 90%;
+        font-size: clamp(1.02rem, 4.4vw, 1.48rem);
+        line-height: 1.08;
     }
 
     .roll-btn {
@@ -464,9 +464,9 @@ h1 {
     }
 
     .dice-value {
-        max-width: 88%;
-        font-size: clamp(0.72rem, 2.8vw, 1.02rem);
-        line-height: 1.12;
+        max-width: 90%;
+        font-size: clamp(0.92rem, 4.1vw, 1.26rem);
+        line-height: 1.08;
     }
 
     .roll-btn {

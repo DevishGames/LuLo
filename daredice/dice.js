@@ -3,7 +3,7 @@ const PLAYER_STORAGE_KEY = "lustLoopsPlayers";
 
 const CATEGORIES = {
     vanilj: {
-        label: "Vanilj",
+        label: "LUST",
         actions: [
             "$ACTOR, ge mjuka heta kyssar på $TARGETS...",
             "$ACTOR, nafsa och kyss $TARGET över...",

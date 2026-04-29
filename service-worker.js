@@ -1,11 +1,10 @@
-const CACHE_NAME = 'llk-cache-v19';
+const CACHE_NAME = 'llk-cache-v30';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './assets/images/l-l_applogo.png',
   './assets/images/l-l_background.png',
-  './assets/images/l-l_startup_image.png',
   './VIBE/content.js',
   './VIBE/index.html',
   './board-game/content.js',
@@ -17,7 +16,11 @@ const CORE_ASSETS = [
   './board-game/assets/audio/timerstop.wav',
   './daredice/dice.html',
   './daredice/dice.css',
-  './daredice/dice.js'
+  './daredice/dice.js',
+  './games/t&d/index.html',
+  './games/t&d/style.css',
+  './games/t&d/main.js',
+  './games/t&d/content.json'
 ];
 
 self.addEventListener('install', (event) => {

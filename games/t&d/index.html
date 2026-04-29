@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#2a0617">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Lust & Lockelser</title>
+    <link rel="apple-touch-icon" href="../../assets/images/l-l_applogo.png">
+    <link rel="icon" type="image/png" href="../../assets/images/l-l_applogo.png">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <section class="screen level-screen is-active" id="levelScreen" aria-label="Välj intensitet">
+            <div class="level-card">
+                <p class="welcome-kicker">Välkommen</p>
+                <h1 class="welcome-title">
+                    <span class="player-name player-one-text" id="welcomePlayerOne">Spelare 1</span>
+                    <span class="amp">&amp;</span>
+                    <span class="player-name player-two-text" id="welcomePlayerTwo">Spelare 2</span>
+                </h1>
+                <p class="welcome-copy">Välj om ni vill börja mjukt med lockelser som öppnar samtalet, eller kasta er direkt in i en hetare nivå där frågorna och lusten får mer tryck.</p>
+
+                <div class="level-list" id="levelList">
+                    <button class="level-btn is-active" type="button" data-level="0">
+                        <span>Nivå 1 - Soft</span>
+                        <small>Börja försiktigt</small>
+                    </button>
+                    <button class="level-btn" type="button" data-level="1">
+                        <span>Nivå 2 - Hot</span>
+                        <small>Hetta upp stämningen!</small>
+                    </button>
+                    <button class="level-btn" type="button" data-level="2">
+                        <span>Nivå 3 - Hard</span>
+                        <small>Öka spänningen!</small>
+                    </button>
+                    <button class="level-btn" type="button" data-level="3">
+                        <span>Nivå 4 - Extreme</span>
+                        <small>Tänj på dina gränser!</small>
+                    </button>
+                </div>
+
+                <button class="start-btn" id="startBtn" type="button">Starta spelet!</button>
+                <button class="back-btn" id="backBtn" type="button">Tillbaka</button>
+            </div>
+        </section>
+
+        <section class="screen game-screen" id="gameScreen" aria-label="Spel">
+            <div class="game-card-shell">
+                <div class="game-topline">
+                    <div class="turn-label" id="turnLabel">Tryck GO</div>
+                    <div class="level-kicker" id="levelKicker">Nivå 1 av 4</div>
+                </div>
+
+                <div class="action-zone action-zone-top">
+                    <button class="choice-btn" id="truthBtn" type="button" disabled>Lockelse</button>
+                </div>
+
+                <div class="coin-stage" id="spinStage">
+                    <button class="coin-btn" id="goBtn" type="button" aria-label="Singla myntet">
+                        <span class="coin-edge" aria-hidden="true"></span>
+                        <span class="coin-face coin-front player-one">
+                            <span class="coin-kicker">GO</span>
+                            <span class="coin-name" id="playerOneName">Spelare 1</span>
+                        </span>
+                        <span class="coin-face coin-back player-two">
+                            <span class="coin-kicker">GO</span>
+                            <span class="coin-name" id="playerTwoName">Spelare 2</span>
+                        </span>
+                    </button>
+                    <div class="coin-hint">
+                        <span class="player-dot cyan"></span>
+                        <span>Singla turen</span>
+                        <span class="player-dot pink"></span>
+                    </div>
+                </div>
+
+                <div class="action-zone action-zone-bottom">
+                    <button class="choice-btn" id="dareBtn" type="button" disabled>Lust</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="task-modal" id="taskModal" aria-hidden="true">
+        <section class="task-card" id="taskCard" role="dialog" aria-modal="true" aria-labelledby="taskTitle">
+            <div class="task-shell">
+                <div class="task-topline">
+                    <div class="task-lead" id="taskLead">Spelare - Lockelse</div>
+                    <div class="task-level" id="taskLevel">Nivå 1 av 4</div>
+                </div>
+                <p class="task-title" id="taskTitle">Titel</p>
+                <p class="task-text" id="taskText"></p>
+
+                <div class="task-footer">
+                    <div class="timer-panel" id="timerPanel" hidden>
+                        <div class="timer" id="timer">02:00</div>
+                        <div class="timer-label">Lust på tid</div>
+                    </div>
+                    <button class="done-btn" id="doneBtn" type="button">Klar</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="./main.js"></script>
+</body>
+</html>

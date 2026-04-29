@@ -833,6 +833,10 @@
             animation: fireFlicker 0.85s ease-in-out infinite alternate;
         }
 
+        .fire-vibe-flame:nth-child(even) {
+            animation-name: fireFlickerReverse;
+        }
+
         .fire-vibe-track {
             height: 14px;
             --vibe-glow: 1;
@@ -1115,6 +1119,12 @@
             100% { transform: scale(calc(0.88 + (var(--vibe-glow, 0) * 0.22))) rotate(-1deg); }
         }
 
+        @keyframes fireFlickerReverse {
+            0% { transform: scale(calc(0.95 + (var(--vibe-glow, 0) * 0.24))) rotate(2deg); }
+            45% { transform: scale(calc(0.82 + (var(--vibe-glow, 0) * 0.2))) rotate(-3deg); }
+            100% { transform: scale(calc(0.95 + (var(--vibe-glow, 0) * 0.24))) rotate(2deg); }
+        }
+
         @keyframes glassRise {
             0% {
                 opacity: 0;
@@ -1303,22 +1313,22 @@
             <p class="intro-kicker">VÄLKOMMEN TILL VIBE</p>
             <h2 class="intro-names" id="introNames">VIBE</h2>
             <div class="intro-copy-fade" id="introCopyFade">
-                <p class="intro-copy">Lägg fördomarna åt sidan när VIBE fokuserar på dialogen<br>Ni får påståenden och fantasier att känna efter och tycka till om.</p>
+                <p class="intro-copy">Våga fråga - Våga svara! Lägg fördommarna åt sidan och låt samtalet flöda.<br><br>VIBE ger er en blanding<br> av sexiga situationer.<br><br><br> Ni trycker: </p>
                 <div class="intro-choice-list" aria-label="Val i VIBE">
                     <div class="intro-choice-block">
                         <span class="action-btn hot intro-choice-btn" aria-hidden="true">
                             <span class="action-copy"><strong>Sexigt</strong></span>
                         </span>
-                        <p class="intro-copy">fördjupar samtalet och fyller mätaren.</p>
+                        <p class="intro-copy">för att fördjupa samtalet och fylla på med hetta.<br><br></p>
                     </div>
                     <div class="intro-choice-block">
                         <span class="action-btn not intro-choice-btn" aria-hidden="true">
                             <span class="action-copy"><strong>Glöm det</strong></span>
                         </span>
-                        <p class="intro-copy">tar er vidare till nästa påstående.</p>
+                        <p class="intro-copy">som tar er vidare<br> till nästa förslag.<br><br><br></p>
                     </div>
                 </div>
-                <p class="intro-copy">När mätaren är full låser ni upp en fysisk utmaning.<br>Ni väljer själva: agera direkt eller fortsätt bygga upp er VIBE med samtal.</p>
+<!--                <p class="intro-copy">När mätaren är full låser ni upp en fysisk utmaning.<br>Ni väljer själva: agera direkt eller fortsätt bygga upp er VIBE med samtal.</p>-->
             </div>
             <div class="intro-actions">
                 <button class="btn-primary" id="introStartBtn" type="button">Starta spelet!</button>
@@ -1332,7 +1342,9 @@
             <p class="intro-kicker">SEXIGT</p>
             <div class="fire-vibe-scale" aria-label="FIRE-skala full">
                 <div class="fire-vibe-label">
-                    <span>FIRE</span>
+                    <span class="fire-vibe-flame" aria-hidden="true">🔥</span>
+                    <span class="fire-vibe-flame" aria-hidden="true">🔥</span>
+                    <span class="fire-vibe-flame" aria-hidden="true">🔥</span>
                     <span class="fire-vibe-flame" aria-hidden="true">🔥</span>
                 </div>
                 <div class="vibe-track fire-vibe-track">
@@ -1340,7 +1352,7 @@
                 </div>
             </div>
             <h2 class="overlay-title">Er VIBE är på topp</h2>
-            <p class="overlay-copy">Mätaren är full och ni har nu chansen att få en fysisk utmaning. Vill ni få en het uppgift i nivå med er VIBE, eller föredrar ni att diskutera vidare för att bygga upp än mer spänning?</p>
+            <p class="overlay-copy">Mätaren är full och ni har chansen på en fysisk utmaning. Vill ni välje en het utmaning i nivå med er VIBE, eller spela vidare för att bygga upp än mer spänning?</p>
             <div class="fire-actions">
                 <button class="btn-primary" id="openSlotBtn" type="button">Ge oss utmaningen</button>
                 <button class="btn-secondary" id="discussMoreBtn" type="button">Bygg mer VIBE</button>

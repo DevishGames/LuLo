@@ -1,0 +1,175 @@
+[
+    {
+        "id": "kvinna_001",
+        "tags": [
+            "bi"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "En annan Kvinna?",
+        "intensities": [
+            "Du och $TARGET har tillsammans bjudit in en annan kvinna. När du ser $TARGET’s första hand på kvinnans bröst, vad väcker den bilden i dig – vill du delta eller se på?",
+            "Du och $TARGET har tillsammans bjudit in en annan kvinna. Föreställ dig att kvinnan står vänd mot dig samtidigt som $TARGET står bakom kvinnan och massera hennes bröst vars bröstvårtor styvnar framför dina ögon. Vad väcker den bilden i dig – vilka känslor dyker upp?",
+            "Du och $TARGET har tillsammans bjudit in en annan kvinna. Föreställ dig att $TARGET går ner på henne. Hon ligger i sängen och $TARGET ligger mellan hennes ben, du sitter bredvid i sängen. Vad blir ditt nästa drag, njuter du av utsikten eller väljer du att hoppa in i leken?",
+            "Du och $TARGET har tillsammans bjudit in en annan kvinna. Föreställ dig att du ser kvinnan rida $TARGET, du sitter bredvid i sängen. Vad blir ditt nästa drag, njuter du av utsikten eller väljer du att hjälpa till? Hur?"
+        ]
+    },
+    {
+        "id": "man_001",
+        "tags": [
+            "bi"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "En annan Man?",
+        "intensities": [
+            "Ni fantiserar om att bjuda in en annan kvinna - När du ser $TARGET ge henne en första kyss – vilka känslor väcks i dig?",
+            "Ni fantiserar om att bjuda in en annan kvinna - Tänk dig att hon står vänd mot dig samtidigt som $TARGET står bakom henne och masserar hennes bröst – vad gör den synen med din upphetsning?",
+            "Ni fantiserar om att bjuda in en annan kvinna - Föreställ dig att $TARGET går ner på en annan kvinna i er säng medan du sitter bredvid. Väljer du att bara titta på, eller väljer du att aktivt ta för dig av situationen? Hur?",
+            "Ni fantiserar om att bjuda in en annan kvinna - Hon rider $TARGET medan du sitter bredvid i sängen. Njuter du av utsikten som den är, eller vill du hjälpa till att guida dem med dina händer?"
+        ]
+    },
+    {
+        "id": "man_002",
+        "tags": [
+            "bi"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "En annan man?",
+        "intensities": [
+            "Ni fantiserar om att bjuda in en annan man - När du ser $TARGET ge honom en första kyss – hur känns det i din kropp när du ser bilden framför dig?",
+            "Ni fantiserar om att bjuda in en annan man - Tänk dig att han står vänd mot dig samtidigt som $TARGET står bakom honom och masserar hans bringa, mage och ner mot hans halvhårda… – vad tänder dig mest med den bilden?",
+            "Ni fantiserar om att bjuda in en annan man - Om $TARGET går ner på honom i er säng – vill du sitta bredvid och titta på, eller föredrar du att ansluta och göra det till en trekant?",
+            "Ni fantiserar om att bjuda in en annan man - Du ser $TARGET ha sex med honom i er säng. Vad blir ditt nästa drag – njuter du av showen eller väljer du att aktivt vara med i leken?"
+        ]
+    },
+    {
+        "id": "oralsex_001",
+        "tags": [],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Oralsex!?",
+        "intensities": [
+            "Blir du själv som mest upphetsad av tanken på att ge $TARGET oralsex, eller föredrar du att fokusera helt på att ta emot?",
+            "Vilka delar av att ge oralsex till $TARGET uppskattar du mest? Beskriv vad som gör det extra njutbart för just dig.",
+            "Vad föredrar du – att $TARGET smeker dig under tiden du ger oralsex, eller vill du få vara helt fokuserad på $TARGETs njutning utan störning?",
+            "Hur känns tanken på att låta $TARGET ta full kontroll över din rytm och rörelse medan du ger oralsex – att bara hänge dig helt medan din mun och ditt huvud styrs av $TARGET’s händer?"
+        ]
+    },
+    {
+        "id": "sprutet_001",
+        "tags": [],
+        "subType": "question",
+        "actor": "female",
+        "target": "male",
+        "title": "Sprutet",
+        "intensities": [
+            "När du ger oralsex och det börjar närma sig för $TARGET – hur vill du att han signalerar att han är nära?",
+            "Om det går snabbare än väntat så att $TARGET inte hinner förvarna – hur reagerar du på den spontana överraskningen?",
+            "När ni har oralsex, var föredrar du att $TARGET kommer? I munnen, över din kropp, eller föredrar du att det landar någon helt annanstans?",
+            "$ACTOR, vad tänker du om att fortsätta leka efter ett sprut på din kropp – att använda fingrarna eller munnen för att smaka på och utforska det som landat på dig eller låta $TARGET smaka på sin egen njutning?"
+        ]
+    },
+    {
+        "id": "smiska_001",
+        "tags": [
+            "smisk"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Smiska mig?",
+        "intensities": [
+            "$ACTOR, vad tänder du mest på under förspelet – en mjuk smekning över rumpan eller ett lite fastare grepp som markerar närvaro?",
+            "Kan du tänka dig smisk som en del av själva akten – är det något som höjer din puls eller föredrar du mjukare beröring?",
+            "Kan du tänka dig att låta smisk vara en egen del av förspelet, där tempot stegras långsamt medan du bara fokuserar på $TARGETs händer mot din bak?",
+            "Om $TARGET bad dig lägga dig över knäet för att få smek och smisk – skulle du kunna tänka dig att testa eller finns det en annan ställning du föredrar?"
+        ]
+    },
+    {
+        "id": "bunden_001",
+        "tags": [
+            "bdsm"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Bunden",
+        "intensities": [
+            "Skulle du kunna tänka dig att bli lekfullt fastbunden och retad som en del av ert gemensamma förspel?",
+            "Skulle du kunna tänka dig att låta $TARGET binda fast dig och ta total kontroll över mötet – från första beröring till klimax?",
+            "Om $TARGET band dina händer och fötter vid sängens hörn – hur vill du helst ligga? På rygg eller mage, med eller utan ögonbindel?",
+            "Föreställ dig att du är fastbunden med ögonbindel och plötsligt känner fler händer än väntat på din kropp. Vad skulle du helst vilja se när bindeln tas av? En extra man eller en extra kvinna?"
+        ]
+    },
+    {
+        "id": "makt_001",
+        "tags": [
+            "bdsm"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Makt & Grepp",
+        "intensities": [
+            "$ACTOR, skulle du kunna tänka dig att bli fasthållen under sex – lekfullt men med en tydlig och bestämd hand?",
+            "Hur skulle du reagera om $TARGET höll fast dina händer eller armar när du är underst – lockas du av maktförskjutningen?",
+            "Vilka tankar väcks i dig om $TARGET fysiskt styr dig genom att hålla i ditt hår för att styra, eller förhindra din rörelse, under sex eller oralsex?",
+            "Vad tänker du om ett lekfullt grepp om din hals som en del av leken – ett sätt för $TARGET att visa dominans och för dig att bjuda in till undergivenhet och släppa kontrollen?"
+        ]
+    },
+    {
+        "id": "pegging_001",
+        "tags": [
+            "anal",
+            "bi"
+        ],
+        "subType": "question",
+        "actor": "female",
+        "target": "male",
+        "title": "Pegging-drömmen",
+        "intensities": [
+            "Har du någonsin funderat på hur det skulle kännas om $ACTOR utforskade din bakre öppning med sina fingrar?",
+            "Skulle du kunna tänka dig att låta $ACTOR prova en butt-plug på dig för att utforska en ny typ av njutning?",
+            "Skulle du kunna tänka dig att låta $ACTOR prova en strap-on på dig för att utforska en ny typ av njutning?",
+            "Föreställ dig att $TARGET tar dig bakifrån med en dildo medan hon viskar hur mycket hon äger din njutning – vad väcker det i dig?"
+        ]
+    },
+    {
+        "id": "anal_001",
+        "tags": [
+            "anal"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Analt utforskande",
+        "intensities": [
+            "Hur ställer du dig till att använda anala leksaker (som buttplugs) som en del av vår vanliga lek?",
+            "Skulle du kunna tänka dig att bära en buttplug under en kväll hemma innan vi går till sängs?",
+            "Hur tänder det dig om $TARGET använder en leksak på dig bakifrån medan hen samtidigt tillfredsställer dig framifrån?",
+            "Skulle du vilja att $TARGET långsamt tog dig analt medan du är fastbunden och bara kan fokusera på känslan av att bli uppfylld?"
+        ]
+    },
+    {
+        "id": "strypning_001",
+        "tags": [
+            "bdsm"
+        ],
+        "subType": "question",
+        "actor": "any",
+        "target": "any",
+        "title": "Strypning (Safe)",
+        "intensities": [
+            "Tänder det dig i tanken att $TARGET lägger en lekfull hand över din hals vid sex för att ge över styrning och kontroll?",
+            "Tänder det dig om $TARGET trycker dig mot väggen med ett försiktigt grepp om din nacke samtidigt som han viskar vad han vill göra med dig i ditt öra?",
+            "Skulle du vilja att $TARGET kontrollerade din andning under klimax för att förhöja känslan med en lekfull hand över din mun eller hals?",
+            "Var går din gräns när det gäller fysisk kontroll över din hals och andning?"
+        ]
+    }
+]

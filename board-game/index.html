@@ -378,27 +378,6 @@
         .timer-panel-active .timer-label {
             color: var(--timer-accent-soft, rgba(203,213,225,0.48));
         }
-        .timer-test-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-            min-height: 30px;
-            padding: 0 10px;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.06);
-            color: rgba(255,255,255,0.72);
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
-        }
-        .timer-test-btn:active { scale: 0.94; }
         .challenge-actions {
             display: flex;
             flex-direction: column;
@@ -994,7 +973,6 @@
                 
                 <div class="challenge-footer">
                     <div class="timer-panel">
-                        <button id="timerTestBtn" onclick="startTestTimer()" class="timer-test-btn" type="button">3s</button>
                         <div id="timer-display" class="text-4xl mb-1 timer-inactive">--:--</div>
                         <div id="timer-label" class="timer-label">Läs utmaningen, klicka sen för tid</div>
                     </div>
@@ -2252,15 +2230,6 @@
             document.querySelector('.timer-panel').classList.add('timer-panel-active');
             setTimerButtonState({ text: "Vi vill fortsätta lite till...", disabled: true });
             startTimer(newSeconds);
-        }
-
-        function startTestTimer() {
-            requestWakeLock();
-            timerHasStarted = true;
-            document.getElementById('timer-display').classList.remove('timer-inactive');
-            document.querySelector('.timer-panel').classList.add('timer-panel-active');
-            setTimerButtonState({ text: "Vi vill fortsätta lite till...", disabled: true });
-            startTimer(3);
         }
 
         function finishTimer() {
